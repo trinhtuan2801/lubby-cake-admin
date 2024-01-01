@@ -1,0 +1,16 @@
+.app-root {
+  height: 100vh;
+  min-height: fit-content;
+  .app-layout {
+    display: flex;
+    height: 100%;
+  }
+  .app-content {
+    flex-grow: 1;
+    position: relative;
+    background-color: white;
+  }
+  .app-body {
+    padding: 8px;
+  }
+}
