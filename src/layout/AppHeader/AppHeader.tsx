@@ -1,7 +1,7 @@
 import { DragHandle } from '@mui/icons-material';
-import MyIconButton from '../../components/MyIconButton';
+import MyIconButton from '../../components/MyIconButton/MyIconButton';
 import AccountMenu from './AccountMenu';
-import './index.scss';
+import './AppHeader.scss';
 import useCheckScreen from '../../hooks/useCheckScreen';
 
 interface Props {

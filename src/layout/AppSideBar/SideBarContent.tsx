@@ -1,8 +1,8 @@
 import { CategoryOutlined } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import clsx from 'clsx';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Content.scss';
+import './SideBarContent.scss';
 
 type IconType = typeof CategoryOutlined;
 
@@ -29,6 +29,7 @@ export default function Content({ items }: Props) {
       >
         Lubby Cake
       </Typography>
+      <Box mt={1}/>
       {items.map(({ icon: Icon, label, path }, index) => (
         <div
           key={index}

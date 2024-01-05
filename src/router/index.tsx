@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AppLayout from '../layout/AppLayout';
-import Home from '../pages/home';
-import Login from '../pages/login';
-import NotFound from '../pages/not-found';
+import AppLayout from '../layout/AppLayout/AppLayout';
+import HomePage from '../pages/home/HomePage';
+import LoginPage from '../pages/login/LoginPage';
+import NotFoundPage from '../pages/not-found/NotFoundPage';
 import AuthGuard from './AuthGuard';
 
 export default function AppRouter() {
@@ -11,10 +11,10 @@ export default function AppRouter() {
       <Routes>
         <Route path='/' Component={AppLayout}>
           <Route Component={AuthGuard}>
-            <Route path='' Component={Home} />
+            <Route path='' Component={HomePage} />
           </Route>
-          <Route path='login' Component={Login} />
-          <Route path='*' Component={NotFound} />
+          <Route path='login' Component={LoginPage} />
+          <Route path='*' Component={NotFoundPage} />
         </Route>
       </Routes>
     </BrowserRouter>

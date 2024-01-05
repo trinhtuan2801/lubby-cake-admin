@@ -2,8 +2,8 @@ import { CakeOutlined, CategoryOutlined } from '@mui/icons-material';
 import { Drawer, DrawerProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import useCheckScreen from '../../hooks/useCheckScreen';
-import Content, { NavItem } from './Content';
-import './index.scss';
+import Content, { NavItem } from './SideBarContent';
+import './AppSideBar.scss';
 
 interface Props {
   open: boolean;
@@ -43,7 +43,7 @@ export default function AppSideBar({ onClose, open }: Props) {
 function DesktopWrapper({ children }: PropsWithChildren) {
   return (
     <div className='app-side-bar'>
-      <div className='fixed-container'>{children}</div>;
+      <div className='fixed-container'>{children}</div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import './index.scss';
-import Header from '../AppHeader';
-import SideBar from '../AppSideBar';
+import './AppLayout.scss';
+import Header from '../AppHeader/AppHeader';
+import SideBar from '../AppSideBar/AppSideBar';
 import { useState } from 'react';
 
 export default function AppLayout() {
