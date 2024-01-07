@@ -7,10 +7,18 @@
   }
   .app-content {
     flex-grow: 1;
-    position: relative;
-    background-color: white;
-  }
-  .app-body {
-    padding: 8px;
+    background-color: rgba(243, 246, 249, 0.6);
+    display: flex;
+    flex-direction: column;
+
+    .app-header {
+      height: 51px;
+    }
+
+    .app-content-body {
+      flex-grow: 1;
+      overflow: auto;
+      padding: 16px;
+    }
   }
 }

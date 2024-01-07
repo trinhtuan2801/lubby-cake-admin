@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import firebaseUtils from './firebase';
-import { userActions } from './redux/user/slice';
-import AppRouter from './router';
+import firebaseUtils from './firebase/utils';
+import { userActions } from './redux/user/userSlice';
+import AppRouter from './router/AppRouter';
 import { useDispatch } from 'react-redux';
 import { getUserData } from './api/user';
 

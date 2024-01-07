@@ -1,9 +1,9 @@
 import { Logout } from '@mui/icons-material';
 import { Avatar, IconButton, ListItemIcon, MenuItem } from '@mui/material';
 import { useRef, useState } from 'react';
-import MyMenu from '../../components/MyMenu/MyMenu';
-import firebaseUtils from '../../firebase';
-import { useAppSelector } from '../../redux/store';
+import { useAppSelector } from '@/redux/store';
+import firebaseUtils from '@/firebase/utils';
+import MyMenu from '@common/MyMenu/MyMenu';
 
 const { auth } = firebaseUtils;
 

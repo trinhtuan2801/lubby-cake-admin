@@ -20,8 +20,10 @@ export default function AppLayout() {
           }}
         />
         <div className='app-content'>
-          <Header toggleOpenSideBar={() => setOpenSideBar((prev) => !prev)} />
-          <div className='app-body'>
+          <div className='app-header'>
+            <Header toggleOpenSideBar={() => setOpenSideBar((prev) => !prev)} />
+          </div>
+          <div className='app-content-body'>
             <Outlet />
           </div>
         </div>

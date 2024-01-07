@@ -7,8 +7,8 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import firebaseUtils from '.';
-import { COLLECTION } from '../constants';
+import firebaseUtils from './utils';
+import { COLLECTION } from '@/constants';
 
 const { firestore } = firebaseUtils;
 

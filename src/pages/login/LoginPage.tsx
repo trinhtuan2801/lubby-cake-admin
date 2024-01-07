@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getUserData } from '../../api/user';
-import firebaseUtils from '../../firebase';
-import { userActions } from '../../redux/user/slice';
+import firebaseUtils from '../../firebase/utils';
+import { userActions } from '../../redux/user/userSlice';
 
 const { auth, provider } = firebaseUtils;
 

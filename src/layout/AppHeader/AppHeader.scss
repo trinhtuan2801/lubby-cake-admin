@@ -1,19 +1,11 @@
-.app-header {
-  height: 51px;
+.header-wrapper {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 4px 4px 4px 8px;
+  border-bottom: 1px solid #e5eaf2;
 
-  .container {
-    background-color: white;
-    display: flex;
-    align-items: center;
-    padding: 4px 4px 4px 8px;
-    border-bottom: 1px solid #e5eaf2;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1200;
-    width: 100%;
-    .content {
-      flex-grow: 1;
-    }
+  .content {
+    flex-grow: 1;
   }
 }

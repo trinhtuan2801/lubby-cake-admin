@@ -29,7 +29,6 @@ export default function Content({ items }: Props) {
       >
         Lubby Cake
       </Typography>
-      <Box mt={1}/>
       {items.map(({ icon: Icon, label, path }, index) => (
         <div
           key={index}
