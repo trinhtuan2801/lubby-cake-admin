@@ -3,7 +3,7 @@ import { Avatar, IconButton, ListItemIcon, MenuItem } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useAppSelector } from '@/redux/store';
 import firebaseUtils from '@/firebase/utils';
-import MyMenu from '@common/MyMenu/MyMenu';
+import MyMenu from '@/components/MyMenu/MyMenu';
 
 const { auth } = firebaseUtils;
 

@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import APP_ENV from '../app-env';
+import APP_ENV from '@/app-env';
 
 const firebaseConfig = APP_ENV.firebase;
 

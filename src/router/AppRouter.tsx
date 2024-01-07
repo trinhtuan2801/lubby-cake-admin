@@ -1,10 +1,11 @@
+import AppLayout from '@/layout/AppLayout/AppLayout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AppLayout from '../layout/AppLayout/AppLayout';
-import HomePage from '../pages/home/HomePage';
-import LoginPage from '../pages/login/LoginPage';
-import NotFoundPage from '../pages/not-found/NotFoundPage';
 import AuthGuard from './AuthGuard';
-import CategoryPage from '../pages/category/CategoryPage';
+import HomePage from '@/pages/home/HomePage';
+import CategoryPage from '@/pages/category/CategoryPage';
+import LoginPage from '@/pages/login/LoginPage';
+import NotFoundPage from '@/pages/not-found/NotFoundPage';
+
 
 export default function AppRouter() {
   return (

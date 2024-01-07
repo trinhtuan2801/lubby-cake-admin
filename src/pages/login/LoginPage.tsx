@@ -1,15 +1,15 @@
+import { getUserData } from '@/api/user';
+import firebaseUtils from '@/firebase/utils';
+import { userActions } from '@/redux/user/userSlice';
 import { Button } from '@mui/material';
 import { signInWithPopup } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getUserData } from '../../api/user';
-import firebaseUtils from '../../firebase/utils';
-import { userActions } from '../../redux/user/userSlice';
 
 const { auth, provider } = firebaseUtils;
 
-export default function Login() {
+export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

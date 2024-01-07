@@ -1,6 +1,6 @@
+import { COLLECTION } from '@/constants';
+import { getDocumentById } from '@/firebase/crud';
 import { User } from 'firebase/auth';
-import { COLLECTION } from '../constants';
-import { getDocumentById } from '../firebase/crud';
 
 export interface UserData extends UserFromDb {
   email: string | null;

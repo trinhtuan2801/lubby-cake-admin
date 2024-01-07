@@ -14,7 +14,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(''),
-      '@common': resolve('components/common')
     },
   },
 });

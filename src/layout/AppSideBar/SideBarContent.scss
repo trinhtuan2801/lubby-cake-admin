@@ -1,7 +1,7 @@
 .app-side-bar-content {
-  display: flex;
-  flex-direction: column;
+  height: 100%;
   padding: 0px 10px;
+  overflow-y: auto;
 
   .title {
     height: 51px;
@@ -10,23 +10,35 @@
     align-items: center;
   }
 
-  .nav-item {
-    display: flex;
-    column-gap: 12px;
-    font-size: 14px;
-    border-radius: 6px;
-    background-color: #ffffff00;
-    cursor: pointer;
-    padding: 6px 12px;
-    transition: background-color 0.2s;
-    color: #434d5b;
-    &:hover {
-      background-color: #f3f6f9;
-      color: #0b0d0e;
-    }
-    &.active {
-      background-color: #007fff1f;
-      color: #0072e5;
+  .nav-item-container {
+    margin-top: 16px;
+
+    .nav-item {
+      height: 52px;
+      align-items: center;
+      display: flex;
+      font-size: 14px;
+      border-radius: 6px;
+      background-color: #ffffff00;
+      cursor: pointer;
+      padding: 8px;
+      transition: background-color 0.4s;
+      .label {
+        margin-left: 12px;
+        font-weight: 500;
+        transition: color 0.4s;
+      }
+      .icon {
+        transition: color 0.4s;
+      }
+      &:hover {
+        background-color: #f3f6f9;
+        color: #0b0d0e;
+      }
+      &.active {
+        background-color: #007fff1f;
+        color: #0072e5;
+      }
     }
   }
 }

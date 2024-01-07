@@ -1,5 +1,5 @@
+import { UserData } from '@/api/user';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { UserData, UserFromDb } from '../../api/user';
 
 interface InitialState {
   userData?: UserData;

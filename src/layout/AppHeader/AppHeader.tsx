@@ -1,8 +1,8 @@
 import { DragHandle } from '@mui/icons-material';
-import MyIconButton from '../../components/common/MyIconButton/MyIconButton';
 import AccountMenu from './AccountMenu';
 import './AppHeader.scss';
-import useCheckScreen from '../../hooks/useCheckScreen';
+import MyIconButton from '@/components/MyIconButton/MyIconButton';
+import useCheckScreen from '@/hooks/useCheckScreen';
 
 interface Props {
   toggleOpenSideBar: () => void;

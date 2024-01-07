@@ -1,10 +1,13 @@
-import CategoryTable from '@/components/pages/category/CategoryTable/CategoryTable';
-import MyIconButton from '@common/MyIconButton/MyIconButton';
+import { Input, Paper, TextField } from '@mui/material';
+import CategoryTable from './CategoryTable/CategoryTable';
+
 export default function CategoryPage() {
   return (
     <>
       <CategoryTable />
-      <MyIconButton />
+      <Paper sx={{ p: 1 }}>
+        <Input placeholder='Loại bánh mới' fullWidth size='small' />
+      </Paper>
     </>
   );
 }

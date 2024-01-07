@@ -13,6 +13,16 @@ export default function MyMenu(props: MenuProps) {
           },
         },
       }}
+      sx={{
+        '& .MuiList-root': {
+          px: 1,
+        },
+        '& .MuiMenuItem-root': {
+          borderRadius: 1,
+          p: 1,
+          minHeight: 0
+        }
+      }}
       {...props}
     />
   );

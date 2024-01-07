@@ -1,5 +1,5 @@
-import { COLLECTION } from '../constants';
-import { getDocuments } from '../firebase/crud';
+import { COLLECTION } from '@/constants';
+import { deleteDocument, getDocuments } from '@/firebase/crud';
 
 export interface Category {
   id: string;
@@ -13,4 +13,8 @@ export const getCategories = async () => {
     ...v.data(),
     id: v.id,
   })) as Category[];
+};
+
+export const deleteCategory = async (id: string) => {
+  return deleteDocument(COLLECTION.Categories, id);
 };

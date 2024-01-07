@@ -24,7 +24,6 @@
     /* Alias path */
     "baseUrl": ".",
     "paths": {
-      "@common/*": ["src/components/common/*"],
       "@/*": ["src/*"],
     }
   },
