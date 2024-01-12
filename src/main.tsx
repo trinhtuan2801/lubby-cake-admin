@@ -4,19 +4,19 @@ import './index.scss';
 import { Provider } from 'react-redux';
 import { store } from './redux/store.ts';
 import { ToastContainer } from 'react-toastify';
-import { ThemeProvider } from '@emotion/react';
-import theme from './theme/index.ts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { CssVarsProvider } from '@mui/joy';
+import theme from './theme/index.ts';
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <CssVarsProvider theme={theme}>
         <App />
         <ToastContainer />
-      </ThemeProvider>
+      </CssVarsProvider>
     </Provider>
   </QueryClientProvider>,
 );

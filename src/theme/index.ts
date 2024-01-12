@@ -1,13 +1,5 @@
-import { createTheme } from '@mui/material';
+import { extendTheme } from '@mui/joy';
 
-const theme = createTheme({
-  components: {
-    MuiTypography: {
-      defaultProps: {
-        fontWeight: 'inherit',
-      },
-    },
-  },
-});
+const theme = extendTheme({});
 
 export default theme;

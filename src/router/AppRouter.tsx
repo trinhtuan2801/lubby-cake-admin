@@ -1,4 +1,4 @@
-import AppLayout from '@/layout/AppLayout/AppLayout';
+import AppLayout from '@/layout/AppLayout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AuthGuard from './AuthGuard';
 import HomePage from '@/pages/home/HomePage';
