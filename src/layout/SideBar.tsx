@@ -1,4 +1,4 @@
-import GlobalStyles from '@mui/joy/GlobalStyles';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Divider from '@mui/joy/Divider';
@@ -7,21 +7,20 @@ import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import ListItemContent from '@mui/joy/ListItemContent';
-import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import Typography from '@mui/joy/Typography';
 
 // import { closeSidebar } from '../utils';
-import { useState } from 'react';
-import { useAppSelector } from '@/redux/store';
+import ColorSchemeToggle from '@/components/ColorSchemeToggle/ColorSchemeToggle';
+import { SidebarTabs } from '@/constants';
 import firebaseUtils from '@/firebase/utils';
-
-const closeSidebar = () => {};
+import { useAppSelector } from '@/redux/store';
+import { Link } from 'react-router-dom';
+import { GlobalStyles } from '@mui/joy';
+import { closeSidebar } from './sideBarUtils';
 
 const { auth } = firebaseUtils;
-export default function Sidebar() {
+export default function AppSidebar() {
   const { userData } = useAppSelector((s) => s.user);
 
   return (
@@ -36,7 +35,7 @@ export default function Sidebar() {
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 10000,
         height: '100dvh',
-        width: 'var(--Sidebar-width)',
+        width: 220,
         top: 0,
         p: 2,
         flexShrink: 0,
@@ -77,6 +76,10 @@ export default function Sidebar() {
         onClick={() => closeSidebar()}
       />
 
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Typography level='title-lg'>Lubby Cake</Typography>
+        <ColorSchemeToggle sx={{ ml: 'auto' }} />
+      </Box>
       <Box
         sx={{
           minHeight: 0,
@@ -97,23 +100,18 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-          <ListItem>
-            <ListItemButton>
-              <HomeRoundedIcon />
-              <ListItemContent>
-                <Typography level='title-sm'>Home</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <DashboardRoundedIcon />
-              <ListItemContent>
-                <Typography level='title-sm'>Dashboard</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
+          {SidebarTabs.map(({ Icon, name, path }) => (
+            <Link to={path} key={path}>
+              <ListItem>
+                <ListItemButton selected={path === location.pathname}>
+                  <Icon />
+                  <ListItemContent>
+                    <Typography level='title-sm'>{name}</Typography>
+                  </ListItemContent>
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          ))}
         </List>
       </Box>
       <Divider />

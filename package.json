@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start:dev": "cross-env VITE_ENV=DEV vite",
-    "start:prod": "cross-env VITE_ENV=PROD vite",
+    "start": "cross-env VITE_ENV=PROD vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

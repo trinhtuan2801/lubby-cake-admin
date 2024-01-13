@@ -17,22 +17,7 @@ export default function CategoryTable() {
     queryFn: getCategories,
   });
 
-  return (
-    <div
-      style={{
-        maxHeight: '500px',
-        paddingBottom: 4
-      }}
-    >
-      <TableContainer component={Paper}>
-        <Table size='small'>
-          <TableBody>
-            {data?.map((row) => (
-              <CategoryTableRow key={row.id} {...row} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
-  );
+  console.log({ data });
+
+  return <div></div>;
 }

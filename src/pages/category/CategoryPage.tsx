@@ -1,13 +1,13 @@
-import { Input, Paper, TextField } from '@mui/material';
+import { Typography } from '@mui/joy';
 import CategoryTable from './CategoryTable/CategoryTable';
 
 export default function CategoryPage() {
   return (
     <>
+      <Typography level='h2' component='h1'>
+        Loại bánh
+      </Typography>
       <CategoryTable />
-      <Paper sx={{ p: 1 }}>
-        <Input placeholder='Loại bánh mới' fullWidth size='small' />
-      </Paper>
     </>
   );
 }
