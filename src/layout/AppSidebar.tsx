@@ -17,7 +17,7 @@ import firebaseUtils from '@/firebase/utils';
 import { useAppSelector } from '@/redux/store';
 import { Link } from 'react-router-dom';
 import { GlobalStyles } from '@mui/joy';
-import { closeSidebar } from './sidebarUtils';
+import { closeSidebar } from './layoutUtils';
 
 const { auth } = firebaseUtils;
 export default function AppSidebar() {
@@ -132,3 +132,4 @@ export default function AppSidebar() {
     </Sheet>
   );
 }
+
