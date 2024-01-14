@@ -43,6 +43,7 @@ export default function AppBreadCrumb() {
         <Typography
           color='neutral'
           sx={{ display: 'flex', alignItems: 'center' }}
+          fontSize={18}
         >
           <HomeRoundedIcon />
         </Typography>

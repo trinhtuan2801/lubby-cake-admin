@@ -20,6 +20,11 @@ export const routeAliases: RouteAlias = {
   subRoutes: {
     categories: {
       name: 'Loại bánh',
+      subRoutes: {
+        cate1: {
+          name: 'Cate 1',
+        },
+      },
     },
   },
 };

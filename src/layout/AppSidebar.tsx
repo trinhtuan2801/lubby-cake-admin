@@ -17,7 +17,7 @@ import firebaseUtils from '@/firebase/utils';
 import { useAppSelector } from '@/redux/store';
 import { Link } from 'react-router-dom';
 import { GlobalStyles } from '@mui/joy';
-import { closeSidebar } from './sideBarUtils';
+import { closeSidebar } from './sidebarUtils';
 
 const { auth } = firebaseUtils;
 export default function AppSidebar() {
@@ -29,13 +29,13 @@ export default function AppSidebar() {
       sx={{
         position: { xs: 'fixed', md: 'sticky' },
         transform: {
-          xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))',
+          xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))', // -100% or 0 
           md: 'none',
         },
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 10000,
         height: '100dvh',
-        width: 220,
+        width: 'var(--Sidebar-width)',
         top: 0,
         p: 2,
         flexShrink: 0,
@@ -47,14 +47,11 @@ export default function AppSidebar() {
       }}
     >
       <GlobalStyles
-        styles={(theme) => ({
+        styles={{
           ':root': {
             '--Sidebar-width': '220px',
-            [theme.breakpoints.up('lg')]: {
-              '--Sidebar-width': '240px',
-            },
           },
-        })}
+        }}
       />
       <Box
         className='Sidebar-overlay'

@@ -7,7 +7,7 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { Outlet } from 'react-router-dom';
 import AppBreadCrumb from './AppBreadCrumb';
-import AppSidebar from './Sidebar';
+import AppSidebar from './AppSidebar';
 import AppHeader from './AppHeader';
 
 export default function JoyOrderDashboardTemplate() {
