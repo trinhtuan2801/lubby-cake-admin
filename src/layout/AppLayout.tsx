@@ -12,7 +12,7 @@ import AppHeader from './AppHeader';
 
 export default function JoyOrderDashboardTemplate() {
   return (
-    <CssVarsProvider disableTransitionOnChange>
+    <CssVarsProvider>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <AppHeader />
@@ -24,10 +24,9 @@ export default function JoyOrderDashboardTemplate() {
             px: { xs: 2, md: 6 },
             pt: {
               xs: 'calc(12px + var(--Header-height))',
-              sm: 'calc(12px + var(--Header-height))',
               md: 3,
             },
-            pb: { xs: 2, sm: 2, md: 3 },
+            pb: 2,
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
@@ -39,8 +38,6 @@ export default function JoyOrderDashboardTemplate() {
           <AppBreadCrumb />
 
           <Outlet />
-          {/* <OrderTable />
-          <OrderList /> */}
         </Box>
       </Box>
     </CssVarsProvider>
