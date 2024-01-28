@@ -7,12 +7,16 @@ export interface Category {
 }
 
 export const getCategories = async () => {
-  const doc = await getDocuments(COLLECTION.Categories);
-  const arr = doc.docs;
-  return arr.map((v) => ({
-    ...v.data(),
-    id: v.id,
-  })) as Category[];
+  try {
+    const doc = await getDocuments(COLLECTION.Categories);
+    const arr = doc.docs;
+    return arr.map((v) => ({
+      ...v.data(),
+      id: v.id,
+    })) as Category[];
+  } catch (err) {
+    return [];
+  }
 };
 
 export const deleteCategory = async (id: string) => {

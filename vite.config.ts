@@ -8,7 +8,7 @@ const resolve = (_path: string) => path.resolve(__dirname, `./src/${_path}`);
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3001,
+    port: 3000,
     host: true,
   },
   resolve: {

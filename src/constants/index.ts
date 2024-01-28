@@ -10,9 +10,7 @@ export enum COLLECTION {
 
 export interface RouteAlias {
   name: string;
-  subRoutes?: {
-    [key: string]: RouteAlias;
-  };
+  subRoutes?: Record<string, RouteAlias>;
 }
 
 export const routeAliases: RouteAlias = {
