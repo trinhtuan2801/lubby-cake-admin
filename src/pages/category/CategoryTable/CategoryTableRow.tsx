@@ -1,9 +1,12 @@
 import { Category, deleteCategory } from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyIconButton from '@/components/MyIconButton/MyIconButton';
-import { DeleteOutline } from '@mui/icons-material';
+import { Delete, DeleteOutline, Edit, Save } from '@mui/icons-material';
+import { Box, IconButton, Typography } from '@mui/joy';
 import { TableCell, TableRow } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface CategoryTableRowProps extends Category {}
 
@@ -17,16 +20,33 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         queryKey: [QUERY_KEY.Categories],
       });
     },
+    onError: () => {
+      toast.error('Lỗi khi xóa');
+    },
   });
 
   return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell width='100%'>{name}</TableCell>
-      <TableCell align='right' >
-        <MyIconButton onClick={() => deleteRow.mutate(id)}>
-          <DeleteOutline color='error' fontSize='small' />
-        </MyIconButton>
-      </TableCell>
-    </TableRow>
+    <tr>
+      <td>
+        <Box pl={1}>
+          <Typography>{name}</Typography>
+        </Box>
+      </td>
+      <td>
+        <Box display='flex' justifyContent='flex-end'>
+          <IconButton variant='plain' size='sm'>
+            <Edit />
+          </IconButton>
+          <IconButton
+            variant='plain'
+            size='sm'
+            color='danger'
+            onClick={() => deleteRow.mutate(id)}
+          >
+            <Delete />
+          </IconButton>
+        </Box>
+      </td>
+    </tr>
   );
 }

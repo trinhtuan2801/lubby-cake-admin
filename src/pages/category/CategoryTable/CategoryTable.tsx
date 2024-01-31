@@ -1,46 +1,93 @@
-import { getCategories } from '@/api/category';
+import { addCategory, deleteCategory, getCategories } from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
 
-import { useQuery } from '@tanstack/react-query';
-import CategoryTableRow from './CategoryTableRow';
-import { Table, Box, IconButton, Input, Sheet, Typography } from '@mui/joy';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  AddOutlined,
-  Delete,
-  DeleteOutline,
-  SearchOutlined,
-} from '@mui/icons-material';
-import { duplicateArray } from '@/utils/array-utils';
+  Table,
+  Box,
+  IconButton,
+  Input,
+  Sheet,
+  Typography,
+  Button,
+} from '@mui/joy';
+import { AddOutlined, Delete, Edit, SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import CategoryTableRow from './CategoryTableRow';
 
 export default function CategoryTable() {
+  const queryClient = useQueryClient();
   const { data = [], isLoading } = useQuery({
     queryKey: [QUERY_KEY.Categories],
     queryFn: getCategories,
   });
   const [searchWord, setSearchWord] = useState('');
+  const [newCate, setNewCate] = useState('');
 
   const renderedData = useMemo(() => {
     let result = [];
     result = data.filter(({ name }) =>
       name.toLowerCase().includes(searchWord.toLowerCase()),
     );
-    result = duplicateArray(result, 10);
     return result;
-  }, [searchWord]);
+  }, [searchWord, data]);
 
-  if (isLoading) return <></>;
+  const addCate = () => {
+    addCategory(newCate)
+      .then(() => {
+        setNewCate('');
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.Categories],
+        });
+      })
+      .catch(() => {
+        toast.error('Lỗi khi thêm');
+      });
+  };
 
   return (
-    <Box flexGrow={1} display='flex' flexDirection='column'>
-      <Box display='flex'>
-        <Input placeholder='Thêm loại bánh' />
-        <IconButton variant='outlined' color='primary' sx={{ ml: 1 }}>
+    <>
+      <Box
+        display='flex'
+        sx={{
+          maxWidth: { xs: 'none', sm: '300px' },
+        }}
+      >
+        <Input
+          placeholder='Thêm loại bánh'
+          size='sm'
+          value={newCate}
+          onChange={(e) => setNewCate(e.target.value)}
+          fullWidth
+        />
+        <Button
+          variant='solid'
+          color='primary'
+          sx={{ ml: 1, px: 1 }}
+          size='sm'
+          disabled={!newCate}
+          onClick={addCate}
+          loading={isLoading}
+        >
           <AddOutlined />
-        </IconButton>
+        </Button>
       </Box>
-      <Box display='flex' justifyContent='space-between' mt={1}>
-        <Input placeholder='Tìm kiếm' startDecorator={<SearchOutlined />} />
+      <Box
+        display='flex'
+        justifyContent='space-between'
+        sx={{
+          maxWidth: { xs: 'none', sm: '300px' },
+        }}
+      >
+        <Input
+          placeholder='Tìm kiếm'
+          startDecorator={<SearchOutlined />}
+          size='sm'
+          value={searchWord}
+          onChange={(e) => setSearchWord(e.target.value)}
+          fullWidth
+        />
       </Box>
       <Sheet
         sx={{
@@ -48,9 +95,9 @@ export default function CategoryTable() {
           flexBasis: 0,
           overflow: 'auto',
           width: '100%',
-          mt: 2,
           borderRadius: 6,
         }}
+        variant='outlined'
       >
         <Table
           stickyHeader
@@ -58,7 +105,7 @@ export default function CategoryTable() {
             width: '100%',
             tableLayout: 'initial',
           }}
-          stripe='odd'
+          size='sm'
         >
           <colgroup>
             <col style={{ width: '100%' }} />
@@ -66,21 +113,12 @@ export default function CategoryTable() {
           </colgroup>
 
           <tbody>
-            {renderedData.map(({ id, name }) => (
-              <tr key={id}>
-                <td>
-                  <Typography>{name}</Typography>
-                </td>
-                <td>
-                  <IconButton variant='outlined' size='sm' color='neutral'>
-                    <Delete />
-                  </IconButton>
-                </td>
-              </tr>
+            {renderedData.map((row) => (
+              <CategoryTableRow key={row.id} {...row} />
             ))}
           </tbody>
         </Table>
       </Sheet>
-    </Box>
+    </>
   );
 }

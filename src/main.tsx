@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CssVarsProvider } from '@mui/joy';
 import theme from './theme/index.ts';
+import MyToastContainer from './components/MyToastContainer/MyToastContainer.tsx';
 
 const queryClient = new QueryClient();
 
@@ -15,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <CssVarsProvider theme={theme}>
         <App />
-        <ToastContainer />
+        <MyToastContainer />
       </CssVarsProvider>
     </Provider>
   </QueryClientProvider>,
