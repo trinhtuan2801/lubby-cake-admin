@@ -28,3 +28,7 @@ export const addCategory = async (newCate: string) => {
     name: newCate,
   });
 };
+
+export const updateCategory = async () => {
+
+};
