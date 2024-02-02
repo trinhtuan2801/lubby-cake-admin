@@ -1,4 +1,4 @@
-import { Category, deleteCategory } from '@/api/category';
+import { Category, deleteCategory, updateCategory } from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyIconButton from '@/components/MyIconButton/MyIconButton';
 import MyModal from '@/components/MyModal/MyModal';
@@ -13,22 +13,39 @@ interface CategoryTableRowProps extends Category {}
 
 export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
   const queryClient = useQueryClient();
+  const [openEdit, setOpenEdit] = useState(false);
+  const [newName, setNewName] = useState(name);
+  const [openDelete, setOpenDelete] = useState(false);
 
-  const deleteRow = () => {
+  const {} = useMutation({
+    mutationFn: deleteCategory,
+  });
+
+  const onDelete = () => {
     deleteCategory(id)
       .then(() => {
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEY.Categories],
         });
+        setOpenEdit(false);
       })
       .catch(() => {
         toast.error('Lỗi khi xóa');
       });
   };
 
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const [newName, setNewName] = useState(name);
+  const onUpdate = () => {
+    updateCategory({ id, name: newName })
+      .then(() => {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.Categories],
+        });
+        setOpenEdit(false);
+      })
+      .catch(() => {
+        toast.error('Lỗi khi cập nhật');
+      });
+  };
 
   useEffect(() => {
     if (openEdit) setNewName(name);
@@ -55,7 +72,7 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
               variant='plain'
               size='sm'
               color='danger'
-              onClick={deleteRow}
+              onClick={() => setOpenDelete(true)}
             >
               <Delete />
             </IconButton>
@@ -67,9 +84,27 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         onClose={() => setOpenEdit(false)}
         title='Sửa'
         OkButtonLabel='Cập nhật'
-        onOk={() => {}}
+        onOk={() => {
+          onUpdate();
+        }}
       >
         <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+      </MyModal>
+      <MyModal
+        open={openDelete}
+        onClose={() => setOpenDelete(false)}
+        title='Xóa'
+        OkButtonLabel='Xóa'
+        OkButtonProps={{
+          color: 'danger',
+        }}
+        onOk={() => {
+          onDelete();
+        }}
+      >
+        <Typography>
+          Bạn muốn xóa <b>{name}</b> ?
+        </Typography>
       </MyModal>
     </>
   );

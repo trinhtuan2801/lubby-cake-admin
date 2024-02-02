@@ -38,3 +38,10 @@ export const updateCategory = async (newData: Category) => {
   const { id, ...rest } = newData;
   return updateDocument(COLLECTION.Categories, id, rest);
 };
+
+export default {
+  getCategories,
+  deleteCategory,
+  addCategory,
+  updateCategory,
+};

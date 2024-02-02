@@ -59,6 +59,7 @@ export default function MyModal({
           )}
           <Button
             variant='outlined'
+            color='neutral'
             {...CancelButtonProps}
             onClick={() => {
               if (onCancel) onCancel();

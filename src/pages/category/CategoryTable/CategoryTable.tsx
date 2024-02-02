@@ -1,7 +1,7 @@
-import { addCategory, deleteCategory, getCategories } from '@/api/category';
+import categoryApi from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Table,
   Box,
@@ -18,13 +18,25 @@ import CategoryTableRow from './CategoryTableRow';
 
 export default function CategoryTable() {
   const queryClient = useQueryClient();
-  const { data = [], isLoading } = useQuery({
+  const { data = [], isLoading: isLoadingData } = useQuery({
     queryKey: [QUERY_KEY.Categories],
-    queryFn: getCategories,
+    queryFn: categoryApi.getCategories,
   });
   const [searchWord, setSearchWord] = useState('');
   const [newCate, setNewCate] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
+
+  const { isPending: isPendingAddCategory, mutate: addCategory } = useMutation({
+    mutationFn: () => categoryApi.addCategory(newCate),
+    onSuccess: () => {
+      setNewCate('');
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.Categories],
+      });
+    },
+    onError: () => {
+      toast.error('Lỗi khi thêm');
+    },
+  });
 
   const renderedData = useMemo(() => {
     let result = [];
@@ -33,19 +45,6 @@ export default function CategoryTable() {
     );
     return result;
   }, [searchWord, data]);
-
-  const addCate = () => {
-    addCategory(newCate)
-      .then(() => {
-        setNewCate('');
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.Categories],
-        });
-      })
-      .catch(() => {
-        toast.error('Lỗi khi thêm');
-      });
-  };
 
   return (
     <>
@@ -62,7 +61,7 @@ export default function CategoryTable() {
           onChange={(e) => setNewCate(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newCate) {
-              addCate();
+              addCategory();
             }
           }}
           fullWidth
@@ -72,8 +71,8 @@ export default function CategoryTable() {
           color='primary'
           size='sm'
           disabled={!newCate}
-          onClick={addCate}
-          loading={isLoading}
+          onClick={() => addCategory()}
+          loading={isLoadingData || isPendingAddCategory}
           sx={{ ml: 1 }}
         >
           Thêm
@@ -111,7 +110,6 @@ export default function CategoryTable() {
             width: '100%',
             tableLayout: 'initial',
           }}
-          size='sm'
         >
           <colgroup>
             <col style={{ width: '100%' }} />
