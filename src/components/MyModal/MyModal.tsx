@@ -41,7 +41,7 @@ export default function MyModal({
 }: PropsWithChildren<Props>) {
   return (
     <Modal {...ModalProps} open={open} onClose={onClose}>
-      <ModalDialog sx={{ rowGap: 2.5 }}>
+      <ModalDialog>
         <ModalClose />
         <Box minHeight={24}>
           {typeof title === 'object' ? (
@@ -51,7 +51,7 @@ export default function MyModal({
           )}
         </Box>
         <Box overflow='auto'>{children}</Box>
-        <Box display='flex' justifyContent='flex-end' columnGap={1}>
+        <Box display='flex' justifyContent='flex-end' columnGap={1} mt={1}>
           {!!onOk && (
             <Button {...OkButtonProps} onClick={onOk}>
               {OkButtonLabel ?? 'Ok'}

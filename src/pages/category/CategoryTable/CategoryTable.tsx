@@ -24,6 +24,7 @@ export default function CategoryTable() {
   });
   const [searchWord, setSearchWord] = useState('');
   const [newCate, setNewCate] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   const renderedData = useMemo(() => {
     let result = [];
@@ -56,21 +57,26 @@ export default function CategoryTable() {
       >
         <Input
           placeholder='Thêm loại bánh'
-          size='sm'
+          size='md'
           value={newCate}
           onChange={(e) => setNewCate(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && newCate) {
+              addCate();
+            }
+          }}
           fullWidth
         />
         <Button
           variant='solid'
           color='primary'
-          sx={{ ml: 1, px: 1 }}
           size='sm'
           disabled={!newCate}
           onClick={addCate}
           loading={isLoading}
+          sx={{ ml: 1 }}
         >
-          <AddOutlined />
+          Thêm
         </Button>
       </Box>
       <Box
@@ -83,7 +89,7 @@ export default function CategoryTable() {
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
-          size='sm'
+          size='md'
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
           fullWidth

@@ -1,5 +1,10 @@
 import { COLLECTION } from '@/constants';
-import { addDocument, deleteDocument, getDocuments } from '@/firebase/crud';
+import {
+  addDocument,
+  deleteDocument,
+  getDocuments,
+  updateDocument,
+} from '@/firebase/crud';
 
 export interface Category {
   id: string;
@@ -29,6 +34,7 @@ export const addCategory = async (newCate: string) => {
   });
 };
 
-export const updateCategory = async () => {
-
+export const updateCategory = async (newData: Category) => {
+  const { id, ...rest } = newData;
+  return updateDocument(COLLECTION.Categories, id, rest);
 };

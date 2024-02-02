@@ -14,17 +14,17 @@ interface CategoryTableRowProps extends Category {}
 export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
   const queryClient = useQueryClient();
 
-  const deleteRow = useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.Categories],
+  const deleteRow = () => {
+    deleteCategory(id)
+      .then(() => {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.Categories],
+        });
+      })
+      .catch(() => {
+        toast.error('Lỗi khi xóa');
       });
-    },
-    onError: () => {
-      toast.error('Lỗi khi xóa');
-    },
-  });
+  };
 
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -55,7 +55,7 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
               variant='plain'
               size='sm'
               color='danger'
-              onClick={() => deleteRow.mutate(id)}
+              onClick={deleteRow}
             >
               <Delete />
             </IconButton>
