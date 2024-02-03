@@ -17,35 +17,31 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
   const [newName, setNewName] = useState(name);
   const [openDelete, setOpenDelete] = useState(false);
 
-  const {} = useMutation({
-    mutationFn: deleteCategory,
+  const updateCategoryMT = useMutation({
+    mutationFn: () => updateCategory({ id, name: newName }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.Categories],
+      });
+      setOpenEdit(false);
+    },
+    onError: () => {
+      toast.error('Lỗi khi cập nhật');
+    },
   });
 
-  const onDelete = () => {
-    deleteCategory(id)
-      .then(() => {
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.Categories],
-        });
-        setOpenEdit(false);
-      })
-      .catch(() => {
-        toast.error('Lỗi khi xóa');
+  const deleteCategoryMT = useMutation({
+    mutationFn: () => deleteCategory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.Categories],
       });
-  };
-
-  const onUpdate = () => {
-    updateCategory({ id, name: newName })
-      .then(() => {
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.Categories],
-        });
-        setOpenEdit(false);
-      })
-      .catch(() => {
-        toast.error('Lỗi khi cập nhật');
-      });
-  };
+      setOpenDelete(false);
+    },
+    onError: () => {
+      toast.error('Lỗi khi xóa');
+    },
+  });
 
   useEffect(() => {
     if (openEdit) setNewName(name);
@@ -84,8 +80,11 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         onClose={() => setOpenEdit(false)}
         title='Sửa'
         OkButtonLabel='Cập nhật'
+        OkButtonProps={{
+          loading: updateCategoryMT.isPending,
+        }}
         onOk={() => {
-          onUpdate();
+          updateCategoryMT.mutate();
         }}
       >
         <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
@@ -97,9 +96,10 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         OkButtonLabel='Xóa'
         OkButtonProps={{
           color: 'danger',
+          loading: deleteCategoryMT.isPending,
         }}
         onOk={() => {
-          onDelete();
+          deleteCategoryMT.mutate();
         }}
       >
         <Typography>

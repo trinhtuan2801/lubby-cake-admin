@@ -12,7 +12,7 @@ export default function AppRouter() {
         <Route path='/' Component={AppLayout}>
           <Route Component={AuthGuard}>
             <Route path='' element={<Navigate to='categories' replace/>} />
-            <Route path='categories/*' Component={CategoryPage} />
+            <Route path='categories' Component={CategoryPage} />
           </Route>
         </Route>
         <Route path='/login' Component={LoginPage} />

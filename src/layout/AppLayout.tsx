@@ -1,14 +1,11 @@
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
 import CssBaseline from '@mui/joy/CssBaseline';
-import Typography from '@mui/joy/Typography';
 import { CssVarsProvider } from '@mui/joy/styles';
 
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { Outlet } from 'react-router-dom';
 import AppBreadCrumb from './AppBreadCrumb';
-import AppSidebar from './AppSidebar';
 import AppHeader from './AppHeader';
+import AppSidebar from './AppSidebar';
 
 export default function JoyOrderDashboardTemplate() {
   return (
@@ -18,8 +15,6 @@ export default function JoyOrderDashboardTemplate() {
         <AppHeader />
         <AppSidebar />
         <Box
-          component='main'
-          className='MainContent'
           sx={{
             px: { xs: 2, md: 6 },
             pt: {
@@ -33,11 +28,22 @@ export default function JoyOrderDashboardTemplate() {
             minWidth: 0,
             height: '100dvh',
             gap: 1,
+            overflow: 'auto',
           }}
         >
-          <AppBreadCrumb />
-
-          <Outlet />
+          <Box display='flex' flexGrow={1} flexDirection='column' alignItems='center'>
+            <Box
+              display='flex'
+              flexDirection='column'
+              gap={1}
+              maxWidth='800px'
+              width='100%'
+              flexGrow={1}
+            >
+              <AppBreadCrumb />
+              <Outlet />
+            </Box>
+          </Box>
         </Box>
       </Box>
     </CssVarsProvider>

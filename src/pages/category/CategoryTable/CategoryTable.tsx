@@ -1,4 +1,3 @@
-import categoryApi from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,21 +11,25 @@ import {
   Button,
 } from '@mui/joy';
 import { AddOutlined, Delete, Edit, SearchOutlined } from '@mui/icons-material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
+import { addCategory, getCategories } from '@/api/category';
 
 export default function CategoryTable() {
   const queryClient = useQueryClient();
-  const { data = [], isLoading: isLoadingData } = useQuery({
+  const getCategoryQR = useQuery({
     queryKey: [QUERY_KEY.Categories],
-    queryFn: categoryApi.getCategories,
+    queryFn: getCategories,
   });
+
+  const categories = getCategoryQR.data ?? [];
+
   const [searchWord, setSearchWord] = useState('');
   const [newCate, setNewCate] = useState('');
 
-  const { isPending: isPendingAddCategory, mutate: addCategory } = useMutation({
-    mutationFn: () => categoryApi.addCategory(newCate),
+  const addCategoryMT = useMutation({
+    mutationFn: () => addCategory(newCate),
     onSuccess: () => {
       setNewCate('');
       queryClient.invalidateQueries({
@@ -40,11 +43,11 @@ export default function CategoryTable() {
 
   const renderedData = useMemo(() => {
     let result = [];
-    result = data.filter(({ name }) =>
+    result = categories.filter(({ name }) =>
       name.toLowerCase().includes(searchWord.toLowerCase()),
     );
     return result;
-  }, [searchWord, data]);
+  }, [searchWord, categories]);
 
   return (
     <>
@@ -61,7 +64,7 @@ export default function CategoryTable() {
           onChange={(e) => setNewCate(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newCate) {
-              addCategory();
+              addCategoryMT.mutate();
             }
           }}
           fullWidth
@@ -70,9 +73,9 @@ export default function CategoryTable() {
           variant='solid'
           color='primary'
           size='sm'
-          disabled={!newCate}
-          onClick={() => addCategory()}
-          loading={isLoadingData || isPendingAddCategory}
+          disabled={!newCate || getCategoryQR.isPending}
+          onClick={() => addCategoryMT.mutate()}
+          loading={addCategoryMT.isPending}
           sx={{ ml: 1 }}
         >
           Thêm
@@ -101,6 +104,7 @@ export default function CategoryTable() {
           overflow: 'auto',
           width: '100%',
           borderRadius: 6,
+          minHeight: '300px',
         }}
         variant='outlined'
       >
@@ -122,6 +126,18 @@ export default function CategoryTable() {
             ))}
           </tbody>
         </Table>
+        <Box
+          position='absolute'
+          top={0}
+          left={0}
+          width='100%'
+          height='100%'
+          bgcolor={(theme) =>
+            theme.palette.mode === 'light' ? 'white' : 'black'
+          }
+          sx={{ opacity: 0.5 }}
+          display={getCategoryQR.isFetching ? 'block' : 'none'}
+        />
       </Sheet>
     </>
   );
