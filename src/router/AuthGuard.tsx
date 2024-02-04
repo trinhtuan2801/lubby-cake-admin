@@ -6,6 +6,6 @@ export default function AuthGuard() {
   const { userData } = useAppSelector((s) => s.user);
 
   if (APP_ENV.env === 'DEV') return <Outlet />;
-  if (!userData || !userData.roles.admin) return <Navigate to='/login' />;
+  if (!userData?.roles?.admin) return <Navigate to='/login' />;
   return <Outlet />;
 }

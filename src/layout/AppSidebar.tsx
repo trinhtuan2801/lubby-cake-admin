@@ -12,7 +12,7 @@ import Typography from '@mui/joy/Typography';
 
 // import { closeSidebar } from '../utils';
 import ColorSchemeToggle from '@/components/ColorSchemeToggle/ColorSchemeToggle';
-import { SidebarTabs } from '@/constants';
+import { CssVar, SidebarTabs } from '@/constants';
 import firebaseUtils from '@/firebase/utils';
 import { useAppSelector } from '@/redux/store';
 import { Link } from 'react-router-dom';
@@ -29,13 +29,13 @@ export default function AppSidebar() {
       sx={{
         position: { xs: 'fixed', md: 'sticky' },
         transform: {
-          xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))', // -100% or 0 
+          xs: `translateX(calc(100% * (var(${CssVar.SIDE_NAVIGATION_SLIDE_IN}, 0) - 1)))`, // -100% or 0
           md: 'none',
         },
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 1100,
         height: '100dvh',
-        width: 'var(--Sidebar-width)',
+        width: `var(${CssVar.SIDEBAR_WIDTH})`,
         top: 0,
         p: 2,
         flexShrink: 0,
@@ -49,7 +49,7 @@ export default function AppSidebar() {
       <GlobalStyles
         styles={{
           ':root': {
-            '--Sidebar-width': '220px',
+            [CssVar.SIDEBAR_WIDTH]: '220px',
           },
         }}
       />
@@ -62,11 +62,11 @@ export default function AppSidebar() {
           left: 0,
           width: '100vw',
           height: '100vh',
-          opacity: 'var(--SideNavigation-slideIn)',
+          opacity: `var(${CssVar.SIDE_NAVIGATION_SLIDE_IN})`,
           backgroundColor: 'var(--joy-palette-background-backdrop)',
           transition: 'opacity 0.4s',
           transform: {
-            xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))',
+            xs: `translateX(calc(100% * (var(${CssVar.SIDE_NAVIGATION_SLIDE_IN}, 0) - 1) + var(${CssVar.SIDE_NAVIGATION_SLIDE_IN}, 0) * var(${CssVar.SIDEBAR_WIDTH}, 0px)))`,
             lg: 'translateX(-100%)',
           },
         }}
@@ -132,4 +132,3 @@ export default function AppSidebar() {
     </Sheet>
   );
 }
-

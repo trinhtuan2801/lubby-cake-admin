@@ -4,6 +4,7 @@ import IconButton from '@mui/joy/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import { toggleSidebar } from './layoutUtils';
+import { CssVar } from '@/constants';
 
 export default function AppHeader() {
   return (
@@ -15,7 +16,7 @@ export default function AppHeader() {
         position: 'fixed',
         top: 0,
         width: '100vw',
-        height: 'var(--Header-height)',
+        height: `var(${CssVar.HEADER_HEIGHT})`,
         zIndex: 1100,
         p: 2,
         gap: 1,
@@ -27,9 +28,9 @@ export default function AppHeader() {
       <GlobalStyles
         styles={(theme) => ({
           ':root': {
-            '--Header-height': '52px',
+            [CssVar.HEADER_HEIGHT]: '52px',
             [theme.breakpoints.up('md')]: {
-              '--Header-height': '0px',
+              [CssVar.HEADER_HEIGHT]: '0px',
             },
           },
         })}

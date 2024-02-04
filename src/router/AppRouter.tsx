@@ -4,6 +4,7 @@ import LoginPage from '@/pages/login/LoginPage';
 import NotFoundPage from '@/pages/not-found/NotFoundPage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AuthGuard from './AuthGuard';
+import CakePage from '@/pages/cake/CakePage';
 
 export default function AppRouter() {
   return (
@@ -11,8 +12,9 @@ export default function AppRouter() {
       <Routes>
         <Route path='/' Component={AppLayout}>
           <Route Component={AuthGuard}>
-            <Route path='' element={<Navigate to='categories' replace/>} />
+            <Route path='' element={<Navigate to='categories' replace />} />
             <Route path='categories' Component={CategoryPage} />
+            <Route path='cakes' Component={CakePage} />
           </Route>
         </Route>
         <Route path='/login' Component={LoginPage} />

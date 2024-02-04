@@ -1,38 +1,15 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Table,
-  Box,
-  Input,
-  Sheet,
-  Button,
-  Select,
-  Option,
-  Typography,
-} from '@mui/joy';
-import { SearchOutlined, Sort } from '@mui/icons-material';
-import { PropsWithChildren, useMemo, useState } from 'react';
+import { Table, Box, Input, Sheet, Button } from '@mui/joy';
+import { SearchOutlined } from '@mui/icons-material';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import CategoryTableRow from './CategoryTableRow';
+import CakeTableRow from './CakeTableRow';
 import { addCategory, getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
-import { ArrayCompareFn, sorterCreator } from '@/utils/array-utils';
 
-const sortMethods = {
-  'name.asc': {
-    name: 'Tên A -> Z',
-    fn: sorterCreator('name', 'asc'),
-  },
-  'name.desc': {
-    name: 'Tên Z -> A',
-    fn: sorterCreator('name', 'desc'),
-  },
-};
-
-type SortType = keyof typeof sortMethods;
-
-export default function CategoryTable() {
+export default function CakeTable() {
   const queryClient = useQueryClient();
   const getCategoryQR = useQuery({
     queryKey: [QUERY_KEY.Categories],
@@ -43,7 +20,6 @@ export default function CategoryTable() {
 
   const [searchWord, setSearchWord] = useState('');
   const [newCate, setNewCate] = useState('');
-  const [sortType, setSortType] = useState<SortType>('name.asc');
 
   const addCategoryMT = useMutation({
     mutationFn: () => addCategory(newCate),
@@ -60,19 +36,23 @@ export default function CategoryTable() {
 
   const renderedData = useMemo(() => {
     let result = [];
-    result = categories
-      .filter(({ name }) =>
-        name.toLowerCase().includes(searchWord.toLowerCase()),
-      )
-      .sort(sortMethods[sortType].fn);
+    result = categories.filter(({ name }) =>
+      name.toLowerCase().includes(searchWord.toLowerCase()),
+    );
     return result;
-  }, [searchWord, categories, sortType]);
+  }, [searchWord, categories]);
 
   return (
     <>
-      <Box300px>
+      <Box
+        display='flex'
+        sx={{
+          maxWidth: { xs: 'none', sm: '300px' },
+        }}
+      >
         <Input
           placeholder='Thêm loại bánh'
+          size='md'
           value={newCate}
           onChange={(e) => setNewCate(e.target.value)}
           onKeyDown={(e) => {
@@ -85,36 +65,31 @@ export default function CategoryTable() {
         <Button
           variant='solid'
           color='primary'
+          size='sm'
           disabled={!newCate || getCategoryQR.isPending}
           onClick={() => addCategoryMT.mutate()}
           loading={addCategoryMT.isPending}
+          sx={{ ml: 1 }}
         >
           Thêm
         </Button>
-      </Box300px>
-      <Box300px>
+      </Box>
+      <Box
+        display='flex'
+        justifyContent='space-between'
+        sx={{
+          maxWidth: { xs: 'none', sm: '300px' },
+        }}
+      >
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
+          size='md'
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
           fullWidth
         />
-      </Box300px>
-      <Box300px>
-        <Select
-          value={sortType}
-          onChange={(_, value) => {
-            value && setSortType(value);
-          }}
-        >
-          {Object.entries(sortMethods).map(([key, value]) => (
-            <Option key={key} value={key}>
-              {value.name}
-            </Option>
-          ))}
-        </Select>
-      </Box300px>
+      </Box>
       <Sheet
         sx={{
           flexGrow: 1,
@@ -140,7 +115,7 @@ export default function CategoryTable() {
 
           <tbody>
             {renderedData.map((row) => (
-              <CategoryTableRow key={row.id} {...row} />
+              <CakeTableRow key={row.id} {...row} />
             ))}
           </tbody>
         </Table>
@@ -150,16 +125,3 @@ export default function CategoryTable() {
     </>
   );
 }
-
-const Box300px = ({ children }: PropsWithChildren) => (
-  <Box
-    display='flex'
-    alignItems='center'
-    columnGap={1}
-    sx={{
-      maxWidth: { xs: 'none', sm: '300px' },
-    }}
-  >
-    {children}
-  </Box>
-);

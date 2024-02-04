@@ -18,11 +18,9 @@ export const routeAliases: RouteAlias = {
   subRoutes: {
     categories: {
       name: 'Loại bánh',
-      subRoutes: {
-        cate1: {
-          name: 'Cate 1',
-        },
-      },
+    },
+    cakes: {
+      name: 'Danh sách bánh',
     },
   },
 };
@@ -47,3 +45,10 @@ export const SidebarTabs: SidebarTab[] = [
     path: '/cakes',
   },
 ];
+
+export enum CssVar {
+  HEADER_HEIGHT = '--Header-height',
+  SIDEBAR_WIDTH = '--Sidebar-width',
+  SIDE_NAVIGATION_SLIDE_IN = '--SideNavigation-slideIn',
+  PAGE_WIDTH = '--Page-width',
+}

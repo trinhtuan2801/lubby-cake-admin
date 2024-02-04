@@ -1,21 +1,21 @@
 import { GlobalStyles, Typography } from '@mui/joy';
-import CategoryTable from './CategoryTable/CategoryTable';
+import CakeTable from './CakeTable/CakeTable';
 import { CssVar } from '@/constants';
 
-export default function CategoryPage() {
+export default function CakePage() {
   return (
     <>
       <GlobalStyles
         styles={{
           ':root': {
-            [CssVar.PAGE_WIDTH]: '600px',
+            [CssVar.PAGE_WIDTH]: '800px',
           },
         }}
       />
       <Typography level='h2' component='h1'>
-        Loại bánh
+        Danh sách bánh
       </Typography>
-      <CategoryTable />
+      <CakeTable />
     </>
   );
 }

@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 import AppBreadCrumb from './AppBreadCrumb';
 import AppHeader from './AppHeader';
 import AppSidebar from './AppSidebar';
+import { CssVar } from '@/constants';
 
 export default function JoyOrderDashboardTemplate() {
   return (
@@ -18,7 +19,7 @@ export default function JoyOrderDashboardTemplate() {
           sx={{
             px: { xs: 2, md: 6 },
             pt: {
-              xs: 'calc(12px + var(--Header-height))',
+              xs: `calc(12px + var(${CssVar.HEADER_HEIGHT}))`,
               md: 3,
             },
             pb: 2,
@@ -31,16 +32,21 @@ export default function JoyOrderDashboardTemplate() {
             overflow: 'auto',
           }}
         >
-          <Box display='flex' flexGrow={1} flexDirection='column' alignItems='center'>
+          <Box
+            display='flex'
+            flexGrow={1}
+            flexDirection='column'
+            alignItems='center'
+          >
             <Box
               display='flex'
               flexDirection='column'
               gap={1}
-              maxWidth='800px'
+              maxWidth={`var(${CssVar.PAGE_WIDTH} , 800px)`}
               width='100%'
               flexGrow={1}
             >
-              <AppBreadCrumb />
+              {/* <AppBreadCrumb /> */}
               <Outlet />
             </Box>
           </Box>
