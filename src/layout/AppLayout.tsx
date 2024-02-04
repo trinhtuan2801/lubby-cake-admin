@@ -3,7 +3,6 @@ import CssBaseline from '@mui/joy/CssBaseline';
 import { CssVarsProvider } from '@mui/joy/styles';
 
 import { Outlet } from 'react-router-dom';
-import AppBreadCrumb from './AppBreadCrumb';
 import AppHeader from './AppHeader';
 import AppSidebar from './AppSidebar';
 import { CssVar } from '@/constants';

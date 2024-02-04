@@ -1,23 +1,14 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Table,
-  Box,
-  Input,
-  Sheet,
-  Button,
-  Select,
-  Option,
-  Typography,
-} from '@mui/joy';
-import { SearchOutlined, Sort } from '@mui/icons-material';
+import { Table, Box, Input, Sheet, Button, Select, Option } from '@mui/joy';
+import { SearchOutlined } from '@mui/icons-material';
 import { PropsWithChildren, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
 import { addCategory, getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
-import { ArrayCompareFn, sorterCreator } from '@/utils/array-utils';
+import { sorterCreator } from '@/utils/array-utils';
 
 const sortMethods = {
   'name.asc': {
