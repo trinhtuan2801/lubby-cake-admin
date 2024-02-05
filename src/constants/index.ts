@@ -26,7 +26,7 @@ export const routeAliases: RouteAlias = {
 };
 
 interface SidebarTab {
-  Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+  Icon: OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
     muiName: string;
   };
   name: string;

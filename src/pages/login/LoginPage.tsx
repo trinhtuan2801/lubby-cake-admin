@@ -21,17 +21,14 @@ export default function LoginPage() {
       dispatch(userActions.setUserData(userData));
       navigate('/');
     } catch (err) {
-      console.log(err);
       auth.signOut();
       toast.error('Không phải tài khoản admin');
     }
   };
 
   return (
-    <>
-      <Button variant='solid' onClick={signInWithGoogle}>
-        Login
-      </Button>
-    </>
+    <Button variant='solid' onClick={signInWithGoogle}>
+      Login
+    </Button>
   );
 }

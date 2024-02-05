@@ -1,4 +1,4 @@
-import { normalizeStr, toLowerCaseNonAccentVietnamese } from './string-utils';
+import { normalizeStr } from './string-utils';
 
 export const duplicateArray = (arr: any[], times = 1) => {
   const result = [];

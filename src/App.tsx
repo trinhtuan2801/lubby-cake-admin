@@ -20,7 +20,7 @@ function App() {
     });
   }, []);
 
-  return <>{isCheckedAuth ? <AppRouter /> : <>Loading...</>}</>;
+  return isCheckedAuth ? <AppRouter /> : <>Loading...</>;
 }
 
 export default App;

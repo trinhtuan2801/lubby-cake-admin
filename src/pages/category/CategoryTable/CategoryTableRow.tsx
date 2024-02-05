@@ -1,10 +1,8 @@
 import { Category, deleteCategory, updateCategory } from '@/api/category';
 import { QUERY_KEY } from '@/api/queryKeys';
-import MyIconButton from '@/components/MyIconButton/MyIconButton';
 import MyModal from '@/components/MyModal/MyModal';
-import { Delete, DeleteOutline, Edit, Save } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 import { Box, IconButton, Input, Typography } from '@mui/joy';
-import { TableCell, TableRow } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';

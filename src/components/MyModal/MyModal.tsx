@@ -2,8 +2,6 @@ import {
   Box,
   Button,
   ButtonProps,
-  DialogContent,
-  DialogTitle,
   Modal,
   ModalClose,
   ModalDialog,

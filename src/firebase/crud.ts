@@ -20,14 +20,14 @@ export const getDocuments = (collectionName: COLLECTION) => {
   return getDocs(collection(firestore, collectionName));
 };
 
-export const addDocument = (collectionName: COLLECTION, data: Object) => {
+export const addDocument = (collectionName: COLLECTION, data: object) => {
   return addDoc(collection(firestore, collectionName), data);
 };
 
 export const updateDocument = (
   collectionName: COLLECTION,
   id: string,
-  data: Object,
+  data: object,
 ) => {
   return setDoc(doc(firestore, collectionName, id), data, { merge: true });
 };
