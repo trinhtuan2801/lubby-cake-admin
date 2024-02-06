@@ -80,7 +80,7 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         OkButtonLabel='Cập nhật'
         OkButtonProps={{
           loading: updateCategoryMT.isPending,
-          disabled: !newName
+          disabled: !newName,
         }}
         onOk={() => {
           updateCategoryMT.mutate();

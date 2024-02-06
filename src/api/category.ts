@@ -6,13 +6,12 @@ import {
   updateDocument,
 } from '@/firebase/crud';
 export interface CategoryWithoutId {
-  name: string
+  name: string;
 }
 
 export interface Category extends CategoryWithoutId {
   id: string;
 }
-
 
 export const getCategories = async () => {
   try {
@@ -35,7 +34,10 @@ export const addCategory = async (newCate: CategoryWithoutId) => {
   return addDocument(COLLECTION.Categories, newCate);
 };
 
-export const updateCategory = async (id: string, updatedData: Partial<CategoryWithoutId>) => {
+export const updateCategory = async (
+  id: string,
+  updatedData: Partial<CategoryWithoutId>,
+) => {
   return updateDocument(COLLECTION.Categories, id, updatedData);
 };
 
