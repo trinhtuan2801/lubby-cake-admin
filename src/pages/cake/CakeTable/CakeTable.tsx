@@ -1,13 +1,20 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Table, Box, Input, Sheet, Button } from '@mui/joy';
+import { Table, Box, Input, Sheet } from '@mui/joy';
 import { SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CakeTableRow from './CakeTableRow';
-import { addCategory, getCategories } from '@/api/category';
+import { getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
+import { CakeWithoutId, addCake } from '@/api/cake';
+
+const initCake: CakeWithoutId = {
+  name: '',
+  desc: '',
+  prices: [],
+};
 
 export default function CakeTable() {
   const queryClient = useQueryClient();
@@ -19,12 +26,13 @@ export default function CakeTable() {
   const categories = getCategoryQR.data ?? [];
 
   const [searchWord, setSearchWord] = useState('');
-  const [newCate, setNewCate] = useState('');
+  const [nameCake, setNewCake] = useState<CakeWithoutId>(initCake);
 
-  const addCategoryMT = useMutation({
-    mutationFn: () => addCategory(newCate),
+  // eslint-disable-next-line
+  const addCakeMT = useMutation({
+    mutationFn: () => addCake(nameCake),
     onSuccess: () => {
-      setNewCate('');
+      setNewCake({ ...initCake });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Categories],
       });
@@ -44,36 +52,6 @@ export default function CakeTable() {
 
   return (
     <>
-      <Box
-        display='flex'
-        sx={{
-          maxWidth: { xs: 'none', sm: '300px' },
-        }}
-      >
-        <Input
-          placeholder='Thêm loại bánh'
-          size='md'
-          value={newCate}
-          onChange={(e) => setNewCate(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && newCate) {
-              addCategoryMT.mutate();
-            }
-          }}
-          fullWidth
-        />
-        <Button
-          variant='solid'
-          color='primary'
-          size='sm'
-          disabled={!newCate || getCategoryQR.isPending}
-          onClick={() => addCategoryMT.mutate()}
-          loading={addCategoryMT.isPending}
-          sx={{ ml: 1 }}
-        >
-          Thêm
-        </Button>
-      </Box>
       <Box
         display='flex'
         justifyContent='space-between'

@@ -6,7 +6,7 @@ import { SearchOutlined } from '@mui/icons-material';
 import { PropsWithChildren, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
-import { addCategory, getCategories } from '@/api/category';
+import { CategoryWithoutId, addCategory, getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
 import { sorterCreator } from '@/utils/array-utils';
 
@@ -23,6 +23,10 @@ const sortMethods = {
 
 type SortType = keyof typeof sortMethods;
 
+const initCategory: CategoryWithoutId = {
+  name: '',
+};
+
 export default function CategoryTable() {
   const queryClient = useQueryClient();
   const getCategoryQR = useQuery({
@@ -33,13 +37,13 @@ export default function CategoryTable() {
   const categories = getCategoryQR.data ?? [];
 
   const [searchWord, setSearchWord] = useState('');
-  const [newCate, setNewCate] = useState('');
+  const [newCate, setNewCate] = useState<CategoryWithoutId>(initCategory);
   const [sortType, setSortType] = useState<SortType>('name.asc');
 
   const addCategoryMT = useMutation({
-    mutationFn: () => addCategory({ name: newCate }),
+    mutationFn: () => addCategory(newCate),
     onSuccess: () => {
-      setNewCate('');
+      setNewCate({ ...initCategory });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Categories],
       });
@@ -64,8 +68,10 @@ export default function CategoryTable() {
       <Box300px>
         <Input
           placeholder='Thêm loại bánh'
-          value={newCate}
-          onChange={(e) => setNewCate(e.target.value)}
+          value={newCate.name}
+          onChange={(e) =>
+            setNewCate((prev) => ({ ...prev, name: e.target.value }))
+          }
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newCate) {
               addCategoryMT.mutate();
