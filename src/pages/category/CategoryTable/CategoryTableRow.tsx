@@ -16,7 +16,7 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
   const [openDelete, setOpenDelete] = useState(false);
 
   const updateCategoryMT = useMutation({
-    mutationFn: () => updateCategory({ id, name: newName }),
+    mutationFn: () => updateCategory(id, { name: newName }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Categories],
@@ -80,6 +80,7 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         OkButtonLabel='Cập nhật'
         OkButtonProps={{
           loading: updateCategoryMT.isPending,
+          disabled: !newName
         }}
         onOk={() => {
           updateCategoryMT.mutate();

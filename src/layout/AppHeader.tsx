@@ -18,7 +18,7 @@ export default function AppHeader() {
         width: '100vw',
         height: `var(${CssVar.HEADER_HEIGHT})`,
         zIndex: 1100,
-        p: 2,
+        px: 1.5,
         gap: 1,
         borderBottom: '1px solid',
         borderColor: 'background.level1',
@@ -28,7 +28,7 @@ export default function AppHeader() {
       <GlobalStyles
         styles={(theme) => ({
           ':root': {
-            [CssVar.HEADER_HEIGHT]: '52px',
+            [CssVar.HEADER_HEIGHT]: '49px',
             [theme.breakpoints.up('md')]: {
               [CssVar.HEADER_HEIGHT]: '0px',
             },

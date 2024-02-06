@@ -37,7 +37,7 @@ export default function CategoryTable() {
   const [sortType, setSortType] = useState<SortType>('name.asc');
 
   const addCategoryMT = useMutation({
-    mutationFn: () => addCategory(newCate),
+    mutationFn: () => addCategory({name: newCate}),
     onSuccess: () => {
       setNewCate('');
       queryClient.invalidateQueries({
