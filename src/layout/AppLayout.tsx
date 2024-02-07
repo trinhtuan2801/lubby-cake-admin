@@ -2,18 +2,24 @@ import Box from '@mui/joy/Box';
 import CssBaseline from '@mui/joy/CssBaseline';
 import { CssVarsProvider } from '@mui/joy/styles';
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import AppHeader from './AppHeader';
 import AppSidebar from './AppSidebar';
 import { CssVar } from '@/constants';
 
 export default function JoyOrderDashboardTemplate() {
+  const { pathname } = useLocation();
+  const isLoginPage = pathname === '/login';
   return (
     <CssVarsProvider>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-        <AppHeader />
-        <AppSidebar />
+        {!isLoginPage && (
+          <>
+            <AppHeader />
+            <AppSidebar />
+          </>
+        )}
         <Box
           sx={{
             px: { xs: 2, md: 6 },

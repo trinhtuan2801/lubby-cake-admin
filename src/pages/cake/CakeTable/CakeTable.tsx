@@ -6,9 +6,9 @@ import { SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CakeTableRow from './CakeTableRow';
-import { getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
-import { CakeWithoutId, addCake } from '@/api/cake';
+import { CakeWithoutId, addCake, getCakes } from '@/api/cake';
+import { normalizeStr } from '@/utils/string-utils';
 
 const initCake: CakeWithoutId = {
   name: '',
@@ -18,23 +18,23 @@ const initCake: CakeWithoutId = {
 
 export default function CakeTable() {
   const queryClient = useQueryClient();
-  const getCategoryQR = useQuery({
-    queryKey: [QUERY_KEY.Categories],
-    queryFn: getCategories,
+  const getCakeQR = useQuery({
+    queryKey: [QUERY_KEY.Cakes],
+    queryFn: getCakes,
   });
 
-  const categories = getCategoryQR.data ?? [];
+  const cakes = getCakeQR.data ?? [];
 
   const [searchWord, setSearchWord] = useState('');
-  const [nameCake, setNewCake] = useState<CakeWithoutId>(initCake);
+  const [newCake, setNewCake] = useState<CakeWithoutId>(initCake);
 
   // eslint-disable-next-line
   const addCakeMT = useMutation({
-    mutationFn: () => addCake(nameCake),
+    mutationFn: () => addCake(newCake),
     onSuccess: () => {
       setNewCake({ ...initCake });
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.Categories],
+        queryKey: [QUERY_KEY.Cakes],
       });
     },
     onError: () => {
@@ -44,11 +44,11 @@ export default function CakeTable() {
 
   const renderedData = useMemo(() => {
     let result = [];
-    result = categories.filter(({ name }) =>
-      name.toLowerCase().includes(searchWord.toLowerCase()),
+    result = cakes.filter(({ name }) =>
+      normalizeStr(name).includes(normalizeStr(searchWord)),
     );
     return result;
-  }, [searchWord, categories]);
+  }, [searchWord, cakes]);
 
   return (
     <>
@@ -80,17 +80,42 @@ export default function CakeTable() {
         variant='outlined'
       >
         <Table
-          stickyHeader
+          // stickyHeader
           sx={{
             width: '100%',
-            tableLayout: 'initial',
+            tableLayout: 'fixed',
+            '& td': {
+              verticalAlign: 'top',
+            },
+            '& tr > *:first-child': {
+              position: 'sticky',
+              left: 0,
+              bgcolor: 'background.surface',
+            },
+            '& tr > *:last-child': {
+              position: 'sticky',
+              right: 0,
+              bgcolor: 'var(--TableCell-headBackground)',
+            },
           }}
+          borderAxis='bothBetween'
         >
           <colgroup>
-            <col style={{ width: '100%' }} />
-            <col />
+            <col style={{ width: '100px' }} />
+            <col style={{ width: '200px' }} />
+            <col style={{ width: '200px' }} />
+            <col style={{ width: '80px' }} />
           </colgroup>
-
+          <thead>
+            <tr>
+              <th>
+                <Box pl={1}>Tên</Box>
+              </th>
+              <th>Mô tả</th>
+              <th>Giá</th>
+              <th></th>
+            </tr>
+          </thead>
           <tbody>
             {renderedData.map((row) => (
               <CakeTableRow key={row.id} {...row} />
@@ -98,7 +123,7 @@ export default function CakeTable() {
           </tbody>
         </Table>
 
-        <Cover visible={getCategoryQR.isFetching} />
+        <Cover visible={getCakeQR.isFetching} />
       </Sheet>
     </>
   );

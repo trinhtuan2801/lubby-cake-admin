@@ -9,6 +9,7 @@ import {
 export interface CakePrice {
   size: string;
   price: number;
+  oldPrice?: number;
 }
 
 export interface CakeWithoutId {

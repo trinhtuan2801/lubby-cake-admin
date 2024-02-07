@@ -1,22 +1,24 @@
-import { Category, deleteCategory, updateCategory } from '@/api/category';
+import { Cake, CakeWithoutId, deleteCake, updateCake } from '@/api/cake';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
 import { Delete, Edit } from '@mui/icons-material';
-import { Box, IconButton, Input, Typography } from '@mui/joy';
+import { Box, IconButton, Typography } from '@mui/joy';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-interface CategoryTableRowProps extends Category {}
+interface CakeTableRowProps extends Cake {}
 
-export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
+export default function CakeTableRow(props: CakeTableRowProps) {
+  const { id, name, desc, prices } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
-  const [newName, setNewName] = useState(name);
+  const [newData, setNewData] = useState<Partial<CakeWithoutId>>({});
   const [openDelete, setOpenDelete] = useState(false);
 
-  const updateCategoryMT = useMutation({
-    mutationFn: () => updateCategory({ id, name: newName }),
+  // eslint-disable-next-line
+  const updateCakeMT = useMutation({
+    mutationFn: () => updateCake(id, newData),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Categories],
@@ -28,8 +30,8 @@ export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
     },
   });
 
-  const deleteCategoryMT = useMutation({
-    mutationFn: () => deleteCategory(id),
+  const deleteCakeMT = useMutation({
+    mutationFn: () => deleteCake(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Categories],
@@ -42,7 +44,7 @@ export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
   });
 
   useEffect(() => {
-    if (openEdit) setNewName(name);
+    if (openEdit) setNewData(props);
   }, [openEdit]);
 
   return (
@@ -51,6 +53,26 @@ export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
         <td>
           <Box pl={1}>
             <Typography>{name}</Typography>
+          </Box>
+        </td>
+        <td>
+          <Box>
+            <Typography>{desc}</Typography>
+          </Box>
+        </td>
+        <td>
+          <Box>
+            {prices.map(({ price, size, oldPrice }) => (
+              <Box key={size}>
+                <Typography fontWeight='bold'>{size}</Typography>
+                <Box display='flex' columnGap={1}>
+                  <Typography color='primary'>{price}</Typography>
+                  {oldPrice && (
+                    <Typography fontSize='12px'>{oldPrice}</Typography>
+                  )}
+                </Box>
+              </Box>
+            ))}
           </Box>
         </td>
         <td>
@@ -73,20 +95,7 @@ export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
           </Box>
         </td>
       </tr>
-      <MyModal
-        open={openEdit}
-        onClose={() => setOpenEdit(false)}
-        title='Sửa'
-        OkButtonLabel='Cập nhật'
-        OkButtonProps={{
-          loading: updateCategoryMT.isPending,
-        }}
-        onOk={() => {
-          updateCategoryMT.mutate();
-        }}
-      >
-        <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
-      </MyModal>
+
       <MyModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}
@@ -94,10 +103,10 @@ export default function CakeTableRow({ id, name }: CategoryTableRowProps) {
         OkButtonLabel='Xóa'
         OkButtonProps={{
           color: 'danger',
-          loading: deleteCategoryMT.isPending,
+          loading: deleteCakeMT.isPending,
         }}
         onOk={() => {
-          deleteCategoryMT.mutate();
+          deleteCakeMT.mutate();
         }}
       >
         <Typography>

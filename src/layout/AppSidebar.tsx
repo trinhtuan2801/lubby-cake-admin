@@ -98,7 +98,7 @@ export default function AppSidebar() {
           }}
         >
           {SidebarTabs.map(({ Icon, name, path }) => (
-            <Link to={path} key={path}>
+            <Link to={path} key={path} onClick={closeSidebar}>
               <ListItem>
                 <ListItemButton selected={path === location.pathname}>
                   <Icon />

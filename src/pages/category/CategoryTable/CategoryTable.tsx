@@ -1,14 +1,24 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Table, Box, Input, Sheet, Button, Select, Option } from '@mui/joy';
-import { SearchOutlined } from '@mui/icons-material';
+import {
+  Table,
+  Box,
+  Input,
+  Sheet,
+  Button,
+  Select,
+  Option,
+  IconButton,
+} from '@mui/joy';
+import { ClearOutlined, SearchOutlined } from '@mui/icons-material';
 import { PropsWithChildren, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
 import { CategoryWithoutId, addCategory, getCategories } from '@/api/category';
 import Cover from '@/components/Cover/Cover';
 import { sorterCreator } from '@/utils/array-utils';
+import { normalizeStr } from '@/utils/string-utils';
 
 const sortMethods = {
   'name.asc': {
@@ -57,7 +67,7 @@ export default function CategoryTable() {
     let result = [];
     result = categories
       .filter(({ name }) =>
-        name.toLowerCase().includes(searchWord.toLowerCase()),
+        normalizeStr(name).includes(normalizeStr(searchWord)),
       )
       .sort(sortMethods[sortType].fn);
     return result;
@@ -82,7 +92,7 @@ export default function CategoryTable() {
         <Button
           variant='solid'
           color='primary'
-          disabled={!newCate || getCategoryQR.isPending}
+          disabled={!newCate.name || getCategoryQR.isPending}
           onClick={() => addCategoryMT.mutate()}
           loading={addCategoryMT.isPending}
         >
@@ -96,6 +106,17 @@ export default function CategoryTable() {
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
           fullWidth
+          endDecorator={
+            searchWord ? (
+              <IconButton
+                size='sm'
+                onClick={() => setSearchWord('')}
+                sx={{ borderRadius: '50%' }}
+              >
+                <ClearOutlined />
+              </IconButton>
+            ) : null
+          }
         />
       </Box300px>
       <Box300px>
