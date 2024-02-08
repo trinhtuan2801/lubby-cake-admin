@@ -15,3 +15,7 @@ export const toLowerCaseNonAccentVietnamese = (str: string) => {
 export const normalizeStr = (str: string) => {
   return toLowerCaseNonAccentVietnamese(str);
 };
+
+export const numberWithCommas = (num: number | string) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};

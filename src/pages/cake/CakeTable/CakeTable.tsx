@@ -80,10 +80,10 @@ export default function CakeTable() {
         variant='outlined'
       >
         <Table
-          // stickyHeader
+          stickyHeader
           sx={{
             width: '100%',
-            tableLayout: 'fixed',
+            tableLayout: 'initial',
             '& td': {
               verticalAlign: 'top',
             },
@@ -97,21 +97,22 @@ export default function CakeTable() {
               right: 0,
               bgcolor: 'var(--TableCell-headBackground)',
             },
+            '& col:first-child': {
+              minWidth: { xs: '100px', sm: '200px' },
+            },
           }}
-          borderAxis='bothBetween'
+          borderAxis='x'
         >
           <colgroup>
-            <col style={{ width: '100px' }} />
-            <col style={{ width: '200px' }} />
-            <col style={{ width: '200px' }} />
-            <col style={{ width: '80px' }} />
+            <col />
+            <col style={{ width: '100%' }} />
+            <col />
           </colgroup>
           <thead>
             <tr>
               <th>
                 <Box pl={1}>Tên</Box>
               </th>
-              <th>Mô tả</th>
               <th>Giá</th>
               <th></th>
             </tr>

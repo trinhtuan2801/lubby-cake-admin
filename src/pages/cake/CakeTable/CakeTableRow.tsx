@@ -1,6 +1,7 @@
 import { Cake, CakeWithoutId, deleteCake, updateCake } from '@/api/cake';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
+import { numberWithCommas } from '@/utils/string-utils';
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/joy';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,7 +11,7 @@ import { toast } from 'react-toastify';
 interface CakeTableRowProps extends Cake {}
 
 export default function CakeTableRow(props: CakeTableRowProps) {
-  const { id, name, desc, prices } = props;
+  const { id, name, prices } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
   const [newData, setNewData] = useState<Partial<CakeWithoutId>>({});
@@ -51,26 +52,28 @@ export default function CakeTableRow(props: CakeTableRowProps) {
     <>
       <tr>
         <td>
-          <Box pl={1}>
+          <Box>
             <Typography>{name}</Typography>
           </Box>
         </td>
         <td>
-          <Box>
-            <Typography>{desc}</Typography>
-          </Box>
-        </td>
-        <td>
-          <Box>
+          <Box display='flex' flexWrap='wrap' gap={1}>
             {prices.map(({ price, size, oldPrice }) => (
               <Box key={size}>
-                <Typography fontWeight='bold'>{size}</Typography>
-                <Box display='flex' columnGap={1}>
-                  <Typography color='primary'>{price}</Typography>
-                  {oldPrice && (
-                    <Typography fontSize='12px'>{oldPrice}</Typography>
-                  )}
-                </Box>
+                <Typography level='body-xs' fontWeight='bold'>
+                  {size}
+                </Typography>
+                <Typography level='body-xs' color='primary'>
+                  {numberWithCommas(price)}
+                </Typography>
+                {oldPrice && (
+                  <Typography
+                    level='body-xs'
+                    sx={{ textDecoration: 'line-through' }}
+                  >
+                    {numberWithCommas(oldPrice)}
+                  </Typography>
+                )}
               </Box>
             ))}
           </Box>

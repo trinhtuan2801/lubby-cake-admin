@@ -8,7 +8,7 @@ export default function CakePage() {
       <GlobalStyles
         styles={{
           ':root': {
-            [CssVar.PAGE_WIDTH]: '800px',
+            [CssVar.PAGE_WIDTH]: '600px',
           },
         }}
       />
