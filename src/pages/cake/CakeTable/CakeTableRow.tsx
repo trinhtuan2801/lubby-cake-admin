@@ -1,7 +1,6 @@
 import { Cake, CakeWithoutId, deleteCake, updateCake } from '@/api/cake';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
-import { numberWithCommas } from '@/utils/string-utils';
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/joy';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -11,7 +10,7 @@ import { toast } from 'react-toastify';
 interface CakeTableRowProps extends Cake {}
 
 export default function CakeTableRow(props: CakeTableRowProps) {
-  const { id, name, prices } = props;
+  const { id, name } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
   const [newData, setNewData] = useState<Partial<CakeWithoutId>>({});
@@ -50,54 +49,22 @@ export default function CakeTableRow(props: CakeTableRowProps) {
 
   return (
     <>
-      <tr>
-        <td>
-          <Box>
-            <Typography>{name}</Typography>
-          </Box>
-        </td>
-        <td>
-          <Box display='flex' flexWrap='wrap' gap={1}>
-            {prices.map(({ price, size, oldPrice }) => (
-              <Box key={size}>
-                <Typography level='body-xs' fontWeight='bold'>
-                  {size}
-                </Typography>
-                <Typography level='body-xs' color='primary'>
-                  {numberWithCommas(price)}
-                </Typography>
-                {oldPrice && (
-                  <Typography
-                    level='body-xs'
-                    sx={{ textDecoration: 'line-through' }}
-                  >
-                    {numberWithCommas(oldPrice)}
-                  </Typography>
-                )}
-              </Box>
-            ))}
-          </Box>
-        </td>
-        <td>
-          <Box display='flex' justifyContent='flex-end'>
-            <IconButton
-              variant='plain'
-              size='sm'
-              onClick={() => setOpenEdit(true)}
-            >
-              <Edit />
-            </IconButton>
-            <IconButton
-              variant='plain'
-              size='sm'
-              color='danger'
-              onClick={() => setOpenDelete(true)}
-            >
-              <Delete />
-            </IconButton>
-          </Box>
-        </td>
-      </tr>
+      <Box display='flex'>
+        <Box>
+          <img />
+        </Box>
+        <IconButton variant='plain' size='sm' onClick={() => setOpenEdit(true)}>
+          <Edit />
+        </IconButton>
+        <IconButton
+          variant='plain'
+          size='sm'
+          color='danger'
+          onClick={() => setOpenDelete(true)}
+        >
+          <Delete />
+        </IconButton>
+      </Box>
 
       <MyModal
         open={openDelete}

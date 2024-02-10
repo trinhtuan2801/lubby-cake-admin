@@ -1,5 +1,5 @@
 import { getUserData } from '@/api/user';
-import firebaseUtils from '@/firebase/utils';
+import firebaseServices from '@/firebase/services';
 import { userActions } from '@/redux/user/userSlice';
 import { Box, Button, Input, Typography } from '@mui/joy';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ReactComponent as GoogleIcon } from '@/assets/svg/google.svg';
 import { useMutation } from '@tanstack/react-query';
-const { auth, provider } = firebaseUtils;
+const { auth, provider } = firebaseServices;
 
 export default function LoginPage() {
   const dispatch = useDispatch();

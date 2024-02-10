@@ -12,9 +12,7 @@ export default function CakePage() {
           },
         }}
       />
-      <Typography level='h2' component='h1'>
-        Danh sách bánh
-      </Typography>
+      <Typography level='title-md'>Danh sách bánh</Typography>
       <CakeTable />
     </>
   );

@@ -7,10 +7,10 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import firebaseUtils from './utils';
+import firebaseServices from './services';
 import { COLLECTION } from '@/constants';
 
-const { firestore } = firebaseUtils;
+const { firestore } = firebaseServices;
 
 export const getDocumentById = (collectionName: COLLECTION, id: string) => {
   return getDoc(doc(firestore, collectionName, id));

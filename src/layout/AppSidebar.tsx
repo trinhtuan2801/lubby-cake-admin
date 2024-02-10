@@ -13,13 +13,13 @@ import Typography from '@mui/joy/Typography';
 // import { closeSidebar } from '../utils';
 import ColorSchemeToggle from '@/components/ColorSchemeToggle/ColorSchemeToggle';
 import { CssVar, SidebarTabs } from '@/constants';
-import firebaseUtils from '@/firebase/utils';
+import firebaseServices from '@/firebase/services';
 import { useAppSelector } from '@/redux/store';
 import { Link } from 'react-router-dom';
 import { GlobalStyles } from '@mui/joy';
 import { closeSidebar } from './layoutUtils';
 
-const { auth } = firebaseUtils;
+const { auth } = firebaseServices;
 export default function AppSidebar() {
   const { userData } = useAppSelector((s) => s.user);
 
@@ -97,18 +97,21 @@ export default function AppSidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-          {SidebarTabs.map(({ Icon, name, path }) => (
-            <Link to={path} key={path} onClick={closeSidebar}>
-              <ListItem>
-                <ListItemButton selected={path === location.pathname}>
-                  <Icon />
-                  <ListItemContent>
-                    <Typography level='title-sm'>{name}</Typography>
-                  </ListItemContent>
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          ))}
+          {SidebarTabs.map(({ Icon, name, path }) => {
+            const isSelected = path === location.pathname;
+            return (
+              <Link to={path} key={path} onClick={closeSidebar}>
+                <ListItem>
+                  <ListItemButton selected={isSelected}>
+                    <Icon />
+                    <ListItemContent>
+                      <Typography level='title-sm'>{name}</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            );
+          })}
         </List>
       </Box>
       <Divider />

@@ -1,23 +1,14 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import APP_ENV from '@/app-env';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import firebaseServices from './services';
+import dayjs from 'dayjs';
 
-const firebaseConfig = APP_ENV.firebase;
-
-export const app = initializeApp(firebaseConfig);
-
-const firebaseUtils = {
-  analytics: getAnalytics(app),
-  auth: getAuth(app),
-  provider: new GoogleAuthProvider(),
-  firestore: getFirestore(app),
+const { storage } = firebaseServices;
+export const uploadImage = async (file: File) => {
+  const storageRef = ref(
+    storage,
+    `cakes/${dayjs().format('DD-MM-YYYYTHH:mm:ss')}-${file.name}`,
+  );
+  const snapshot = await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(snapshot.ref);
+  return url;
 };
-
-const { auth, provider } = firebaseUtils;
-
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
-
-export default firebaseUtils;

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import firebaseUtils from './firebase/utils';
+import firebaseServices from './firebase/services';
 import { userActions } from './redux/user/userSlice';
 import AppRouter from './router/AppRouter';
 import { useDispatch } from 'react-redux';
 import { getUserData } from './api/user';
 
-const { auth } = firebaseUtils;
+const { auth } = firebaseServices;
 function App() {
   const [isCheckedAuth, setIsCheckedAuth] = useState(false);
   const dispatch = useDispatch();

@@ -7,12 +7,18 @@ import {
   Input,
   Sheet,
   Button,
-  Select,
-  Option,
   IconButton,
+  Dropdown,
+  MenuButton,
+  Menu,
+  MenuItem,
 } from '@mui/joy';
-import { ClearOutlined, SearchOutlined } from '@mui/icons-material';
-import { PropsWithChildren, useMemo, useState } from 'react';
+import {
+  ClearOutlined,
+  SearchOutlined,
+  SwapVertOutlined,
+} from '@mui/icons-material';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
 import { CategoryWithoutId, addCategory, getCategories } from '@/api/category';
@@ -20,7 +26,7 @@ import Cover from '@/components/Cover/Cover';
 import { sorterCreator } from '@/utils/array-utils';
 import { normalizeStr } from '@/utils/string-utils';
 
-const sortMethods = {
+const sortTypes = {
   'name.asc': {
     name: 'Tên A -> Z',
     fn: sorterCreator('name', 'asc'),
@@ -31,7 +37,7 @@ const sortMethods = {
   },
 };
 
-type SortType = keyof typeof sortMethods;
+type SortType = keyof typeof sortTypes;
 
 const initCategory: CategoryWithoutId = {
   name: '',
@@ -69,18 +75,18 @@ export default function CategoryTable() {
       .filter(({ name }) =>
         normalizeStr(name).includes(normalizeStr(searchWord)),
       )
-      .sort(sortMethods[sortType].fn);
+      .sort(sortTypes[sortType].fn);
     return result;
   }, [searchWord, categories, sortType]);
 
   return (
     <>
-      <Box300px>
+      <Box display='flex' gap={1}>
         <Input
           placeholder='Thêm loại bánh'
           value={newCate.name}
           onChange={(e) =>
-            setNewCate((prev) => ({ ...prev, name: e.target.value }))
+            setNewCate((prev) => ({ ...prev, name: e.target.value.trim() }))
           }
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newCate) {
@@ -98,8 +104,8 @@ export default function CategoryTable() {
         >
           Thêm
         </Button>
-      </Box300px>
-      <Box300px>
+      </Box>
+      <Box display='flex' gap={1}>
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
@@ -118,21 +124,27 @@ export default function CategoryTable() {
             ) : null
           }
         />
-      </Box300px>
-      <Box300px>
-        <Select
-          value={sortType}
-          onChange={(_, value) => {
-            value && setSortType(value);
-          }}
-        >
-          {Object.entries(sortMethods).map(([key, value]) => (
-            <Option key={key} value={key}>
-              {value.name}
-            </Option>
-          ))}
-        </Select>
-      </Box300px>
+
+        <Dropdown>
+          <MenuButton
+            slots={{ root: IconButton }}
+            slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+          >
+            <SwapVertOutlined />
+          </MenuButton>
+          <Menu>
+            {Object.entries(sortTypes).map(([sortType, sortInfo]) => (
+              <MenuItem
+                key={sortType}
+                onClick={() => setSortType(sortType as SortType)}
+              >
+                {sortInfo.name}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Dropdown>
+      </Box>
+
       <Sheet
         sx={{
           flexGrow: 1,
@@ -168,16 +180,3 @@ export default function CategoryTable() {
     </>
   );
 }
-
-const Box300px = ({ children }: PropsWithChildren) => (
-  <Box
-    display='flex'
-    alignItems='center'
-    columnGap={1}
-    sx={{
-      maxWidth: { xs: 'none', sm: '300px' },
-    }}
-  >
-    {children}
-  </Box>
-);
