@@ -86,7 +86,7 @@ export default function CategoryTable() {
           placeholder='Thêm loại bánh'
           value={newCate.name}
           onChange={(e) =>
-            setNewCate((prev) => ({ ...prev, name: e.target.value.trim() }))
+            setNewCate((prev) => ({ ...prev, name: e.target.value }))
           }
           onKeyDown={(e) => {
             if (e.key === 'Enter' && newCate) {

@@ -31,14 +31,19 @@ export const deleteCategory = (id: string) => {
 };
 
 export const addCategory = async (newCate: CategoryWithoutId) => {
-  return addDocument(COLLECTION.Categories, newCate);
+  const data = { ...newCate };
+  data.name = data.name.trim();
+
+  return addDocument(COLLECTION.Categories, data);
 };
 
 export const updateCategory = async (
   id: string,
   updatedData: Partial<CategoryWithoutId>,
 ) => {
-  return updateDocument(COLLECTION.Categories, id, updatedData);
+  const data = { ...updatedData };
+  if (data.name) data.name = data.name.trim();
+  return updateDocument(COLLECTION.Categories, id, data);
 };
 
 export default {

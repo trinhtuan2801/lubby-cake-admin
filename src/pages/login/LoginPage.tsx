@@ -60,6 +60,9 @@ export default function LoginPage() {
             placeholder='Mật khẩu'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') signIn('email');
+            }}
             type='password'
           />
           <Button
