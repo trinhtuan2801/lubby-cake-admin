@@ -12,7 +12,9 @@ export default function CategoryPage() {
           },
         }}
       />
-      <Typography level='title-md'>Loại bánh</Typography>
+      <Typography level='title-md' color='primary' fontWeight='bold'>
+        Loại bánh
+      </Typography>
       <CategoryTable />
     </>
   );

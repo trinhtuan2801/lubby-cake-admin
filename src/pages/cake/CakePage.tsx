@@ -3,6 +3,7 @@ import CakeTable from './CakeTable/CakeTable';
 import { CssVar } from '@/constants';
 
 export default function CakePage() {
+  // const { ImportComponent, triggerImport } = useUploadImage();
   return (
     <>
       <GlobalStyles
@@ -12,7 +13,12 @@ export default function CakePage() {
           },
         }}
       />
-      <Typography level='title-md'>Danh sách bánh</Typography>
+      {/* <ImportComponent /> */}
+      {/* <Button onClick={triggerImport}>Import</Button> */}
+
+      <Typography level='title-md' color='primary' fontWeight='bold'>
+        Danh sách bánh
+      </Typography>
       <CakeTable />
     </>
   );

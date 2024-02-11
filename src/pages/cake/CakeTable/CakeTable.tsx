@@ -1,7 +1,7 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Box, Input, Sheet } from '@mui/joy';
+import { Box, Input } from '@mui/joy';
 import { SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ const initCake: CakeWithoutId = {
   name: '',
   desc: '',
   prices: [],
+  images: [],
 };
 
 export default function CakeTable() {
@@ -51,13 +52,7 @@ export default function CakeTable() {
 
   return (
     <>
-      <Box
-        display='flex'
-        justifyContent='space-between'
-        sx={{
-          maxWidth: { xs: 'none', sm: '300px' },
-        }}
-      >
+      <Box display='flex'>
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
@@ -67,21 +62,22 @@ export default function CakeTable() {
           fullWidth
         />
       </Box>
-      <Sheet
+      <Box
         sx={{
           flexGrow: 1,
           flexBasis: 0,
           overflow: 'auto',
           width: '100%',
-          borderRadius: 6,
           minHeight: '300px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
         }}
-        variant='outlined'
       >
         {renderedData.map((row) => (
           <CakeTableRow key={row.id} {...row} />
         ))}
-      </Sheet>
+      </Box>
     </>
   );
 }

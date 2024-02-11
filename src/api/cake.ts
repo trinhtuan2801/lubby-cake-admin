@@ -16,6 +16,7 @@ export interface CakeWithoutId {
   name: string;
   desc: string;
   prices: CakePrice[];
+  images: string[];
 }
 
 export interface Cake extends CakeWithoutId {
