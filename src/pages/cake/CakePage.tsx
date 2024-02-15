@@ -16,7 +16,12 @@ export default function CakePage() {
       {/* <ImportComponent /> */}
       {/* <Button onClick={triggerImport}>Import</Button> */}
 
-      <Typography level='title-md' color='primary' fontWeight='bold'>
+      <Typography
+        level='title-md'
+        color='primary'
+        fontWeight='bold'
+        textTransform='uppercase'
+      >
         Danh sách bánh
       </Typography>
       <CakeTable />

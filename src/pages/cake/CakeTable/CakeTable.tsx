@@ -1,29 +1,37 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Box, Input } from '@mui/joy';
-import { SearchOutlined } from '@mui/icons-material';
+import { Box, IconButton, Input } from '@mui/joy';
+import { Add, ClearOutlined, SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CakeWithoutId, addCake, getCakes } from '@/api/cake';
 import { normalizeStr } from '@/utils/string-utils';
 import CakeTableRow from './CakeTableRow';
+import { getCategories } from '@/api/category';
 
 const initCake: CakeWithoutId = {
   name: '',
   desc: '',
   prices: [],
   images: [],
+  categoryIds: [],
 };
 
 export default function CakeTable() {
   const queryClient = useQueryClient();
+  const getCategoryQR = useQuery({
+    queryKey: [QUERY_KEY.Categories],
+    queryFn: getCategories,
+  });
   const getCakeQR = useQuery({
     queryKey: [QUERY_KEY.Cakes],
-    queryFn: getCakes,
+    queryFn: () => getCakes(getCategoryQR.data ?? []),
+    enabled: !!getCategoryQR.data,
   });
 
   const cakes = getCakeQR.data ?? [];
+  const categories = getCategoryQR.data ?? [];
 
   const [searchWord, setSearchWord] = useState('');
   const [newCake, setNewCake] = useState<CakeWithoutId>(initCake);
@@ -47,8 +55,9 @@ export default function CakeTable() {
     result = cakes.filter(({ name }) =>
       normalizeStr(name).includes(normalizeStr(searchWord)),
     );
+
     return result;
-  }, [searchWord, cakes]);
+  }, [searchWord, cakes, categories]);
 
   return (
     <>
@@ -60,7 +69,21 @@ export default function CakeTable() {
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
           fullWidth
+          endDecorator={
+            searchWord ? (
+              <IconButton
+                size='sm'
+                onClick={() => setSearchWord('')}
+                sx={{ borderRadius: '50%' }}
+              >
+                <ClearOutlined />
+              </IconButton>
+            ) : null
+          }
         />
+        <IconButton variant='solid' color='primary' sx={{ ml: 1 }}>
+          <Add />
+        </IconButton>
       </Box>
       <Box
         sx={{

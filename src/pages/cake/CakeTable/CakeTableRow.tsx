@@ -65,9 +65,9 @@ export default function CakeTableRow(props: CakeTableRowProps) {
   }, [openEdit]);
 
   return (
-    <Box bgcolor='background.level1' borderRadius={6} p={0.8}>
+    <Box bgcolor='background.level1' borderRadius={6} py={0.5}>
       <Box display='flex'>
-        <Box>
+        <Box mt={0.5} ml={1}>
           {images[0] && (
             <AspectRatio ratio='1' sx={{ width: 50, borderRadius: 6 }}>
               <img src={images[0]} />
@@ -75,38 +75,34 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           )}
         </Box>
         <Box pl={1} flexGrow={1} overflow='hidden'>
-          <Box display='flex' flexDirection='column'>
-            <Typography
-              level='body-sm'
-              sx={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                verticalAlign: 'text-top',
-              }}
-              fontWeight='bold'
-              color='primary'
-            >
-              {name}
-            </Typography>
-            <Box>
-              {prices.map(({ size, price, oldPrice }, index) => (
-                <Box key={index} display='flex' gap={1}>
-                  <Typography level='body-sm' fontWeight='bold'>
-                    {size}
-                  </Typography>
-                  <Typography level='body-sm' color='success'>
-                    {numberWithCommas(price)}đ
-                  </Typography>
-                  {oldPrice && (
-                    <Typography level='body-sm'>
-                      ({numberWithCommas(oldPrice)}đ)
-                    </Typography>
-                  )}
-                </Box>
-              ))}
+          <Typography
+            level='body-sm'
+            sx={{
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              verticalAlign: 'text-top',
+            }}
+            fontWeight='bold'
+            color='primary'
+          >
+            {name}
+          </Typography>
+          {prices.map(({ size, price, oldPrice }, index) => (
+            <Box key={index} display='flex' gap={1}>
+              <Typography level='body-sm' fontWeight='bold'>
+                {size}
+              </Typography>
+              <Typography level='body-sm' color='success'>
+                {numberWithCommas(price)}đ
+              </Typography>
+              {oldPrice && (
+                <Typography level='body-sm'>
+                  ({numberWithCommas(oldPrice)}đ)
+                </Typography>
+              )}
             </Box>
-          </Box>
+          ))}
           {isExpandDesc && <Typography level='body-sm'>{desc}</Typography>}
         </Box>
         <Box

@@ -5,6 +5,7 @@ import {
   getDocuments,
   updateDocument,
 } from '@/firebase/crud';
+import { Category } from './category';
 
 export interface CakePrice {
   size: string;
@@ -17,20 +18,36 @@ export interface CakeWithoutId {
   desc: string;
   prices: CakePrice[];
   images: string[];
+  categoryIds: string[];
 }
 
 export interface Cake extends CakeWithoutId {
   id: string;
 }
 
-export const getCakes = async () => {
+export interface CakeWithCategories extends Cake {
+  categories: Category[];
+}
+
+export const getCakes = async (categories: Category[]) => {
   try {
     const doc = await getDocuments(COLLECTION.Cakes);
     const arr = doc.docs;
-    return arr.map((v) => ({
-      ...v.data(),
-      id: v.id,
-    })) as Cake[];
+    return arr.map((v) => {
+      const cakeWithoutId = v.data() as CakeWithoutId;
+      const cake: Cake = {
+        ...cakeWithoutId,
+        id: v.id,
+      };
+      const cakeCategories = categories.filter((cate) =>
+        cake.categoryIds.includes(cate.id),
+      );
+      const cakeWithCategories: CakeWithCategories = {
+        ...cake,
+        categories: cakeCategories,
+      };
+      return cakeWithCategories;
+    });
   } catch (err) {
     return [];
   }
