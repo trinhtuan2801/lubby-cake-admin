@@ -7,17 +7,11 @@ import {
   Input,
   Sheet,
   Button,
+  Select,
+  Option,
   IconButton,
-  Dropdown,
-  MenuButton,
-  Menu,
-  MenuItem,
 } from '@mui/joy';
-import {
-  ClearOutlined,
-  SearchOutlined,
-  SwapVertOutlined,
-} from '@mui/icons-material';
+import { ClearOutlined, SearchOutlined } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
@@ -26,7 +20,7 @@ import Cover from '@/components/Cover/Cover';
 import { sorterCreator } from '@/utils/array-utils';
 import { normalizeStr } from '@/utils/string-utils';
 
-const sortTypes = {
+const sortMethods = {
   'name.asc': {
     name: 'Tên A -> Z',
     fn: sorterCreator('name', 'asc'),
@@ -37,7 +31,7 @@ const sortTypes = {
   },
 };
 
-type SortType = keyof typeof sortTypes;
+type SortType = keyof typeof sortMethods;
 
 const initCategory: CategoryWithoutId = {
   name: '',
@@ -75,7 +69,7 @@ export default function CategoryTable() {
       .filter(({ name }) =>
         normalizeStr(name).includes(normalizeStr(searchWord)),
       )
-      .sort(sortTypes[sortType].fn);
+      .sort(sortMethods[sortType].fn);
     return result;
   }, [searchWord, categories, sortType]);
 
@@ -105,7 +99,7 @@ export default function CategoryTable() {
           Thêm
         </Button>
       </Box>
-      <Box display='flex' gap={1}>
+      <Box>
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
@@ -124,27 +118,22 @@ export default function CategoryTable() {
             ) : null
           }
         />
-
-        <Dropdown>
-          <MenuButton
-            slots={{ root: IconButton }}
-            slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
-          >
-            <SwapVertOutlined />
-          </MenuButton>
-          <Menu>
-            {Object.entries(sortTypes).map(([sortType, sortInfo]) => (
-              <MenuItem
-                key={sortType}
-                onClick={() => setSortType(sortType as SortType)}
-              >
-                {sortInfo.name}
-              </MenuItem>
-            ))}
-          </Menu>
-        </Dropdown>
       </Box>
-
+      <Box>
+        <Select
+          sx={{ width: 'fit-content' }}
+          value={sortType}
+          onChange={(_, value) => {
+            value && setSortType(value);
+          }}
+        >
+          {Object.entries(sortMethods).map(([key, value]) => (
+            <Option key={key} value={key}>
+              {value.name}
+            </Option>
+          ))}
+        </Select>
+      </Box>
       <Sheet
         sx={{
           flexGrow: 1,

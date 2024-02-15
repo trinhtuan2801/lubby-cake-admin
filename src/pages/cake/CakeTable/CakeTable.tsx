@@ -1,14 +1,22 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Box, IconButton, Input } from '@mui/joy';
-import { Add, ClearOutlined, SearchOutlined } from '@mui/icons-material';
+import { Box, Chip, IconButton, Input, Skeleton, Typography } from '@mui/joy';
+import {
+  Add,
+  CheckOutlined,
+  ClearOutlined,
+  FilterAltOutlined,
+  SearchOutlined,
+  SentimentDissatisfiedOutlined,
+} from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CakeWithoutId, addCake, getCakes } from '@/api/cake';
 import { normalizeStr } from '@/utils/string-utils';
 import CakeTableRow from './CakeTableRow';
 import { getCategories } from '@/api/category';
+import { isAinB } from '@/utils/array-utils';
 
 const initCake: CakeWithoutId = {
   name: '',
@@ -16,6 +24,7 @@ const initCake: CakeWithoutId = {
   prices: [],
   images: [],
   categoryIds: [],
+  categories: [],
 };
 
 export default function CakeTable() {
@@ -24,17 +33,20 @@ export default function CakeTable() {
     queryKey: [QUERY_KEY.Categories],
     queryFn: getCategories,
   });
+  const categories = getCategoryQR.data;
+
   const getCakeQR = useQuery({
     queryKey: [QUERY_KEY.Cakes],
-    queryFn: () => getCakes(getCategoryQR.data ?? []),
-    enabled: !!getCategoryQR.data,
+    queryFn: () => getCakes(categories),
+    enabled: !!categories,
   });
-
-  const cakes = getCakeQR.data ?? [];
-  const categories = getCategoryQR.data ?? [];
+  const cakes = getCakeQR.data;
 
   const [searchWord, setSearchWord] = useState('');
   const [newCake, setNewCake] = useState<CakeWithoutId>(initCake);
+
+  const [showFilter, setShowFilter] = useState(false);
+  const [checkedChips, setCheckedChips] = useState<string[]>([]);
 
   // eslint-disable-next-line
   const addCakeMT = useMutation({
@@ -51,17 +63,31 @@ export default function CakeTable() {
   });
 
   const renderedData = useMemo(() => {
+    if (!cakes) return [];
     let result = [];
     result = cakes.filter(({ name }) =>
       normalizeStr(name).includes(normalizeStr(searchWord)),
     );
-
+    result = result.filter(({ categoryIds }) =>
+      isAinB(checkedChips, categoryIds),
+    );
     return result;
-  }, [searchWord, cakes, categories]);
+  }, [searchWord, cakes, checkedChips]);
+
+  const onClickChip = (id: string) => {
+    const newCheckedChips = checkedChips.slice();
+    const index = newCheckedChips.indexOf(id);
+    if (index === -1) {
+      newCheckedChips.push(id);
+    } else {
+      newCheckedChips.splice(index, 1);
+    }
+    setCheckedChips(newCheckedChips);
+  };
 
   return (
     <>
-      <Box display='flex'>
+      <Box display='flex' gap={1}>
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
@@ -81,25 +107,72 @@ export default function CakeTable() {
             ) : null
           }
         />
-        <IconButton variant='solid' color='primary' sx={{ ml: 1 }}>
+        <IconButton
+          variant={showFilter ? 'solid' : 'outlined'}
+          color='primary'
+          onClick={() => setShowFilter((prev) => !prev)}
+          disabled={!cakes?.length}
+        >
+          <FilterAltOutlined />
+        </IconButton>
+        <IconButton variant='outlined' color='primary'>
           <Add />
         </IconButton>
       </Box>
+      <Box display={showFilter ? 'flex' : 'none'} gap={0.5}>
+        {categories?.map((cate) => {
+          const checked = checkedChips.includes(cate.id);
+          return (
+            <Chip
+              key={cate.id}
+              variant='outlined'
+              color={checked ? 'primary' : 'neutral'}
+              startDecorator={
+                checked && (
+                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
+                )
+              }
+              onClick={() => onClickChip(cate.id)}
+            >
+              {cate.name}
+            </Chip>
+          );
+        })}
+      </Box>
       <Box
-        sx={{
-          flexGrow: 1,
-          flexBasis: 0,
-          overflow: 'auto',
-          width: '100%',
-          minHeight: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-        }}
+        flexGrow={1}
+        flexBasis={0}
+        overflow='auto'
+        minHeight='300px'
+        display='flex'
+        flexDirection='column'
+        gap={1}
+        mt={0.5}
       >
         {renderedData.map((row) => (
           <CakeTableRow key={row.id} {...row} />
         ))}
+        {getCakeQR.isPending &&
+          Array(3)
+            .fill(0)
+            .map((_, index) => (
+              <Skeleton
+                key={index}
+                variant='rectangular'
+                sx={{ borderRadius: '6px', minHeight: '100px' }}
+              />
+            ))}
+        {!getCakeQR.isPending &&
+          !renderedData.length &&
+          (checkedChips.length || searchWord) && (
+            <Typography
+              sx={{ display: 'flex', alignItems: 'center' }}
+              color='danger'
+            >
+              <SentimentDissatisfiedOutlined />
+              &nbsp;Không tìm thấy bánh phù hợp
+            </Typography>
+          )}
       </Box>
     </>
   );

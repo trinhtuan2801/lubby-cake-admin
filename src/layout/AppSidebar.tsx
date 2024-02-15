@@ -119,7 +119,7 @@ export default function AppSidebar() {
         <Avatar variant='outlined' size='sm' src={userData?.photoURL ?? ''} />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography level='title-sm'>{userData?.displayName}</Typography>
-          <Typography level='body-sm'>
+          <Typography level='body-xs'>
             {userData?.email?.split('@')[0]}
           </Typography>
         </Box>

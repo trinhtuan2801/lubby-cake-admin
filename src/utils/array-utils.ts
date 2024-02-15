@@ -34,3 +34,14 @@ export const sorterCreator: SorterCreator =
     else if (!isGreater(a, b)) result = isAscending ? -1 : 1;
     return result;
   };
+
+export const isAinB = (arrA: any[], arrB: any[]) => {
+  const set = new Set();
+  arrB.forEach((b) => {
+    set.add(b);
+  });
+  for (const a of arrA) {
+    if (!set.has(a)) return false;
+  }
+  return true;
+};

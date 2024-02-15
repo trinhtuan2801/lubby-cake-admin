@@ -52,3 +52,7 @@ export enum CssVar {
   SIDE_NAVIGATION_SLIDE_IN = '--SideNavigation-slideIn',
   PAGE_WIDTH = '--Page-width',
 }
+
+export enum SearchParam {
+  CATEGORY = 'cate',
+}

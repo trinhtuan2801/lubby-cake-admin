@@ -19,37 +19,32 @@ export interface CakeWithoutId {
   prices: CakePrice[];
   images: string[];
   categoryIds: string[];
+  categories: Category[];
 }
 
 export interface Cake extends CakeWithoutId {
   id: string;
 }
 
-export interface CakeWithCategories extends Cake {
-  categories: Category[];
-}
-
-export const getCakes = async (categories: Category[]) => {
+export const getCakes = async (categories: Category[] = []) => {
   try {
     const doc = await getDocuments(COLLECTION.Cakes);
     const arr = doc.docs;
     return arr.map((v) => {
-      const cakeWithoutId = v.data() as CakeWithoutId;
+      const cakeWithoutId = v.data() as Omit<CakeWithoutId, 'categories'>;
       const cake: Cake = {
         ...cakeWithoutId,
         id: v.id,
+        categories: [],
       };
       const cakeCategories = categories.filter((cate) =>
         cake.categoryIds.includes(cate.id),
       );
-      const cakeWithCategories: CakeWithCategories = {
-        ...cake,
-        categories: cakeCategories,
-      };
-      return cakeWithCategories;
+      cake.categories = cakeCategories;
+      return cake;
     });
   } catch (err) {
-    return [];
+    return undefined;
   }
 };
 

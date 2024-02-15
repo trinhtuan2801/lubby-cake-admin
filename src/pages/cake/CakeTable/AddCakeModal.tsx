@@ -1,3 +1,5 @@
+import MyModal from '@/components/MyModal/MyModal';
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -6,5 +8,5 @@ interface Props {
 // eslint-disable-next-line
 export default function AddCakeModal({ open, onClose }: Props) {
   // eslint-disable-next-line
-  return <></>;
+  return <MyModal open={open} onClose={onClose}></MyModal>;
 }

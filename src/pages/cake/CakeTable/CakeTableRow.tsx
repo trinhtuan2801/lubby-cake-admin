@@ -11,6 +11,7 @@ import {
 import {
   AspectRatio,
   Box,
+  Chip,
   Dropdown,
   IconButton,
   ListItemDecorator,
@@ -26,7 +27,7 @@ import { toast } from 'react-toastify';
 interface CakeTableRowProps extends Cake {}
 
 export default function CakeTableRow(props: CakeTableRowProps) {
-  const { id, name, images, prices, desc } = props;
+  const { id, name, images, prices, desc, categories } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
   const [newData, setNewData] = useState<Partial<CakeWithoutId>>({});
@@ -65,8 +66,14 @@ export default function CakeTableRow(props: CakeTableRowProps) {
   }, [openEdit]);
 
   return (
-    <Box bgcolor='background.level1' borderRadius={6} py={0.5}>
-      <Box display='flex'>
+    <>
+      <Box
+        bgcolor='background.level1'
+        borderRadius={6}
+        pt={0.5}
+        pb={1}
+        display='flex'
+      >
         <Box mt={0.5} ml={1}>
           {images[0] && (
             <AspectRatio ratio='1' sx={{ width: 50, borderRadius: 6 }}>
@@ -88,22 +95,35 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           >
             {name}
           </Typography>
-          {prices.map(({ size, price, oldPrice }, index) => (
-            <Box key={index} display='flex' gap={1}>
-              <Typography level='body-sm' fontWeight='bold'>
-                {size}
-              </Typography>
-              <Typography level='body-sm' color='success'>
-                {numberWithCommas(price)}đ
-              </Typography>
-              {oldPrice && (
-                <Typography level='body-sm'>
-                  ({numberWithCommas(oldPrice)}đ)
+          <Box>
+            {prices.map(({ size, price, oldPrice }, index) => (
+              <Box key={index} display='flex' gap={1}>
+                <Typography level='body-sm' fontWeight='bold'>
+                  {size}
                 </Typography>
-              )}
-            </Box>
-          ))}
-          {isExpandDesc && <Typography level='body-sm'>{desc}</Typography>}
+                <Typography level='body-sm' color='success'>
+                  {numberWithCommas(price)}đ
+                </Typography>
+                {oldPrice && (
+                  <Typography level='body-sm'>
+                    ({numberWithCommas(oldPrice)}đ)
+                  </Typography>
+                )}
+              </Box>
+            ))}
+          </Box>
+          <Box display='flex' gap={0.5} flexWrap='wrap' mt={0.5}>
+            {categories.map((cate) => (
+              <Chip key={cate.id} variant='outlined' color='primary' size='sm'>
+                {cate.name}
+              </Chip>
+            ))}
+          </Box>
+          {isExpandDesc && (
+            <Typography level='body-sm' mt={0.5}>
+              {desc}
+            </Typography>
+          )}
         </Box>
         <Box
           flexShrink={0}
@@ -146,7 +166,6 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           </IconButton>
         </Box>
       </Box>
-
       <MyModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}
@@ -168,6 +187,6 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           &nbsp;?
         </Typography>
       </MyModal>
-    </Box>
+    </>
   );
 }
