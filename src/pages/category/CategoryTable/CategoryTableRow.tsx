@@ -102,7 +102,14 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
         }}
       >
         <Typography>
-          Bạn muốn xóa <b>{name}</b> ?
+          Bạn muốn xóa loại:&nbsp;
+          <Typography
+            component='span'
+            color='danger'
+            sx={{ display: 'inline-block' }}
+          >
+            {name} ?
+          </Typography>
         </Typography>
       </MyModal>
     </>

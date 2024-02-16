@@ -17,6 +17,7 @@ import { normalizeStr } from '@/utils/string-utils';
 import CakeTableRow from './CakeTableRow';
 import { getCategories } from '@/api/category';
 import { isAinB } from '@/utils/array-utils';
+import AddCakeModal from './AddCakeModal/AddCakeModal';
 
 const initCake: CakeWithoutId = {
   name: '',
@@ -48,6 +49,8 @@ export default function CakeTable() {
   const [showFilter, setShowFilter] = useState(false);
   const [checkedChips, setCheckedChips] = useState<string[]>([]);
 
+  const [openAddModal, setOpenAddModal] = useState(false);
+
   // eslint-disable-next-line
   const addCakeMT = useMutation({
     mutationFn: () => addCake(newCake),
@@ -68,11 +71,12 @@ export default function CakeTable() {
     result = cakes.filter(({ name }) =>
       normalizeStr(name).includes(normalizeStr(searchWord)),
     );
-    result = result.filter(({ categoryIds }) =>
-      isAinB(checkedChips, categoryIds),
-    );
+    if (showFilter)
+      result = result.filter(({ categoryIds }) =>
+        isAinB(checkedChips, categoryIds),
+      );
     return result;
-  }, [searchWord, cakes, checkedChips]);
+  }, [searchWord, cakes, checkedChips, showFilter]);
 
   const onClickChip = (id: string) => {
     const newCheckedChips = checkedChips.slice();
@@ -109,13 +113,13 @@ export default function CakeTable() {
         />
         <IconButton
           variant={showFilter ? 'solid' : 'outlined'}
-          color='primary'
+          color={showFilter ? 'primary' : 'neutral'}
           onClick={() => setShowFilter((prev) => !prev)}
           disabled={!cakes?.length}
         >
           <FilterAltOutlined />
         </IconButton>
-        <IconButton variant='outlined' color='primary'>
+        <IconButton variant='outlined' onClick={() => setOpenAddModal(true)}>
           <Add />
         </IconButton>
       </Box>
@@ -125,7 +129,7 @@ export default function CakeTable() {
           return (
             <Chip
               key={cate.id}
-              variant='outlined'
+              variant={checked ? 'solid' : 'outlined'}
               color={checked ? 'primary' : 'neutral'}
               startDecorator={
                 checked && (
@@ -164,7 +168,7 @@ export default function CakeTable() {
             ))}
         {!getCakeQR.isPending &&
           !renderedData.length &&
-          (checkedChips.length || searchWord) && (
+          ((showFilter && checkedChips.length) || searchWord) && (
             <Typography
               sx={{ display: 'flex', alignItems: 'center' }}
               color='danger'
@@ -174,6 +178,10 @@ export default function CakeTable() {
             </Typography>
           )}
       </Box>
+      <AddCakeModal
+        open={openAddModal}
+        onClose={() => setOpenAddModal(false)}
+      />
     </>
   );
 }

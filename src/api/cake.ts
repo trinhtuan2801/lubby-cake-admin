@@ -8,6 +8,7 @@ import {
 import { Category } from './category';
 
 export interface CakePrice {
+  id: string;
   size: string;
   price: number;
   oldPrice?: number;

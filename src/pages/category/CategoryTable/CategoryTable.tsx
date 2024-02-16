@@ -7,11 +7,17 @@ import {
   Input,
   Sheet,
   Button,
-  Select,
-  Option,
   IconButton,
+  Dropdown,
+  MenuButton,
+  MenuItem,
+  Menu,
 } from '@mui/joy';
-import { ClearOutlined, SearchOutlined } from '@mui/icons-material';
+import {
+  ClearOutlined,
+  SearchOutlined,
+  SwapVertOutlined,
+} from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CategoryTableRow from './CategoryTableRow';
@@ -99,7 +105,7 @@ export default function CategoryTable() {
           Thêm
         </Button>
       </Box>
-      <Box>
+      <Box display='flex' gap={1}>
         <Input
           placeholder='Tìm kiếm'
           startDecorator={<SearchOutlined />}
@@ -118,21 +124,25 @@ export default function CategoryTable() {
             ) : null
           }
         />
-      </Box>
-      <Box>
-        <Select
-          sx={{ width: 'fit-content' }}
-          value={sortType}
-          onChange={(_, value) => {
-            value && setSortType(value);
-          }}
-        >
-          {Object.entries(sortMethods).map(([key, value]) => (
-            <Option key={key} value={key}>
-              {value.name}
-            </Option>
-          ))}
-        </Select>
+        <Dropdown>
+          <MenuButton
+            slots={{ root: IconButton }}
+            slotProps={{ root: { variant: 'outlined' } }}
+          >
+            <SwapVertOutlined />
+          </MenuButton>
+          <Menu>
+            {Object.entries(sortMethods).map(([key, method]) => (
+              <MenuItem
+                key={key}
+                selected={key === sortType}
+                onClick={() => setSortType(key as SortType)}
+              >
+                {method.name}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Dropdown>
       </Box>
       <Sheet
         sx={{

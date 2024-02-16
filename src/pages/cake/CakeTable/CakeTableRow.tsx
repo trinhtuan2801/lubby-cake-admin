@@ -96,15 +96,15 @@ export default function CakeTableRow(props: CakeTableRowProps) {
             {name}
           </Typography>
           <Box>
-            {prices.map(({ size, price, oldPrice }, index) => (
-              <Box key={index} display='flex' gap={1}>
+            {prices.map(({ size, price, oldPrice, id }) => (
+              <Box key={id} display='flex' gap={1}>
                 <Typography level='body-sm' fontWeight='bold'>
                   {size}
                 </Typography>
                 <Typography level='body-sm' color='success'>
                   {numberWithCommas(price)}đ
                 </Typography>
-                {oldPrice && (
+                {oldPrice !== undefined && (
                   <Typography level='body-sm'>
                     ({numberWithCommas(oldPrice)}đ)
                   </Typography>
@@ -180,11 +180,14 @@ export default function CakeTableRow(props: CakeTableRowProps) {
         }}
       >
         <Typography>
-          Bạn muốn xóa&nbsp;
-          <Typography component='span' color='danger'>
-            {name}
+          Bạn muốn xóa:&nbsp;
+          <Typography
+            component='span'
+            color='danger'
+            sx={{ display: 'inline-block' }}
+          >
+            {name} ?
           </Typography>
-          &nbsp;?
         </Typography>
       </MyModal>
     </>

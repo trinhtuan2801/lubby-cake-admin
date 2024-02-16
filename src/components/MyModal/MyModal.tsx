@@ -14,7 +14,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   title?: ReactNode;
-  ModalProps?: ModalProps;
+  ModalProps?: Partial<ModalProps>;
   footer?: ReactNode;
   onOk?: () => void;
   OkButtonLabel?: string;
@@ -39,7 +39,7 @@ export default function MyModal({
 }: PropsWithChildren<Props>) {
   return (
     <Modal {...ModalProps} open={open} onClose={onClose}>
-      <ModalDialog>
+      <ModalDialog sx={{ width: 'calc(100vw - 2rem)', maxWidth: '100vw' }}>
         <ModalClose />
         <Box minHeight={24}>
           {typeof title === 'object' ? (
