@@ -104,7 +104,7 @@ export default function CakeTableRow(props: CakeTableRowProps) {
                 <Typography level='body-sm' color='success'>
                   {numberWithCommas(price)}đ
                 </Typography>
-                {oldPrice !== undefined && (
+                {!!oldPrice && (
                   <Typography level='body-sm'>
                     ({numberWithCommas(oldPrice)}đ)
                   </Typography>

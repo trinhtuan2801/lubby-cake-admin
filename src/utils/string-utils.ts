@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const toLowerCaseNonAccentVietnamese = (str: string) => {
   str = str.toLowerCase();
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -18,4 +20,8 @@ export const normalizeStr = (str: string) => {
 
 export const numberWithCommas = (num: number | string) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+export const genIdByDate = () => {
+  return dayjs().format('DD-MM-YYYYTHH:mm:ss');
 };

@@ -39,7 +39,7 @@ export default function MyModal({
 }: PropsWithChildren<Props>) {
   return (
     <Modal {...ModalProps} open={open} onClose={onClose}>
-      <ModalDialog sx={{ width: 'calc(100vw - 2rem)', maxWidth: '100vw' }}>
+      <ModalDialog sx={{ width: 'calc(100vw - 2rem)', maxWidth: '600px' }}>
         <ModalClose />
         <Box minHeight={24}>
           {typeof title === 'object' ? (

@@ -14,16 +14,12 @@ export interface Category extends CategoryWithoutId {
 }
 
 export const getCategories = async () => {
-  try {
-    const doc = await getDocuments(COLLECTION.Categories);
-    const arr = doc.docs;
-    return arr.map((v) => ({
-      ...v.data(),
-      id: v.id,
-    })) as Category[];
-  } catch (err) {
-    return [];
-  }
+  const doc = await getDocuments(COLLECTION.Categories);
+  const arr = doc.docs;
+  return arr.map((v) => ({
+    ...v.data(),
+    id: v.id,
+  })) as Category[];
 };
 
 export const deleteCategory = (id: string) => {

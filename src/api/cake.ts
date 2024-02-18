@@ -7,11 +7,13 @@ import {
 } from '@/firebase/crud';
 import { Category } from './category';
 
-export interface CakePrice {
-  id: string;
+export interface CakePriceWithoutId {
   size: string;
   price: number;
-  oldPrice?: number;
+  oldPrice: number | null;
+}
+export interface CakePrice extends CakePriceWithoutId {
+  id: string;
 }
 
 export interface CakeWithoutId {
@@ -28,25 +30,21 @@ export interface Cake extends CakeWithoutId {
 }
 
 export const getCakes = async (categories: Category[] = []) => {
-  try {
-    const doc = await getDocuments(COLLECTION.Cakes);
-    const arr = doc.docs;
-    return arr.map((v) => {
-      const cakeWithoutId = v.data() as Omit<CakeWithoutId, 'categories'>;
-      const cake: Cake = {
-        ...cakeWithoutId,
-        id: v.id,
-        categories: [],
-      };
-      const cakeCategories = categories.filter((cate) =>
-        cake.categoryIds.includes(cate.id),
-      );
-      cake.categories = cakeCategories;
-      return cake;
-    });
-  } catch (err) {
-    return undefined;
-  }
+  const doc = await getDocuments(COLLECTION.Cakes);
+  const arr = doc.docs;
+  return arr.map((v) => {
+    const cakeWithoutId = v.data() as Omit<CakeWithoutId, 'categories'>;
+    const cake: Cake = {
+      ...cakeWithoutId,
+      id: v.id,
+      categories: [],
+    };
+    const cakeCategories = categories.filter((cate) =>
+      cake.categoryIds.includes(cate.id),
+    );
+    cake.categories = cakeCategories;
+    return cake;
+  });
 };
 
 export const deleteCake = (id: string) => {
