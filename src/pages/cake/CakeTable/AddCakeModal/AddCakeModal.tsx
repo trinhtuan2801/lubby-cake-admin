@@ -2,19 +2,20 @@ import { CakePrice, CakePriceWithoutId } from '@/api/cake';
 import MyModal from '@/components/MyModal/MyModal';
 import useUploadImage from '@/hooks/useUploadImage';
 import { genIdByDate } from '@/utils/string-utils';
-import { AddOutlined, PhotoCameraOutlined } from '@mui/icons-material';
+import { AddOutlined, Close, PhotoCameraOutlined } from '@mui/icons-material';
 import {
   AspectRatio,
   Autocomplete,
   Box,
+  Chip,
   IconButton,
   Input,
   Textarea,
   Typography,
 } from '@mui/joy';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PriceInput from './PriceInput';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, SubmitErrorHandler } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/api/queryKeys';
 import { getCategories } from '@/api/category';
@@ -25,6 +26,8 @@ interface Props {
 }
 
 interface CakeForm {
+  images: string[];
+  prices: CakePrice[];
   name: string;
   desc: string;
   categoryIds: string[];
@@ -46,7 +49,7 @@ export default function AddCakeModal({ open, onClose }: Props) {
     queryFn: getCategories,
   });
   const { ImportComponent, triggerImport, data } = useUploadImage();
-  const { register, handleSubmit } = useForm<CakeForm>();
+  const { register, handleSubmit, setValue, watch } = useForm<CakeForm>();
 
   // eslint-disable-next-line
   const [prices, setPrices] = useState<CakePrice[]>([]);
@@ -54,6 +57,22 @@ export default function AddCakeModal({ open, onClose }: Props) {
   useEffect(() => {
     if (!open) setPrices([]);
   }, [open]);
+
+  const categoryIdsField = useMemo(() => {
+    return register('categoryIds', {
+      validate: {
+        required: (value) => !!value.length,
+      },
+    });
+  }, [register]);
+
+  const pricesField = useMemo(() => {
+    return register('prices', {
+      validate: {
+        required: (value) => !!value.length,
+      },
+    });
+  }, [register]);
 
   const onChangePrice = (id: string, newData: CakePriceWithoutId) => {
     const newPrices = [...prices];
@@ -79,12 +98,23 @@ export default function AddCakeModal({ open, onClose }: Props) {
     console.log('formData', formData);
   };
 
+  const onInvalid: SubmitErrorHandler<CakeForm> = (errors) => {
+    // eslint-disable-next-line
+    console.log('errors', errors);
+  };
+
+  const categoryIds = watch('categoryIds');
+
+  useEffect(() => {
+    setValue('prices', prices);
+  }, [prices]);
+
   return (
     <MyModal
       open={open}
       onClose={onClose}
       OkButtonLabel='Thêm'
-      onOk={handleSubmit(onSubmit)}
+      onOk={handleSubmit(onSubmit, onInvalid)}
     >
       <ImportComponent />
       <Box display='flex' justifyContent='center'>
@@ -95,38 +125,37 @@ export default function AddCakeModal({ open, onClose }: Props) {
             objectFit='cover'
           >
             {data && (
-              <img
-                src={data}
-                style={{ border: 'none', outline: 'none' }}
-                onClick={triggerImport}
-              />
+              <img src={data} style={{ border: 'none', outline: 'none' }} />
             )}
           </AspectRatio>
-          {!data && (
-            <IconButton
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-              variant='plain'
-              onClick={triggerImport}
-            >
-              <PhotoCameraOutlined />
-            </IconButton>
-          )}
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+            variant='solid'
+            color='primary'
+            onClick={triggerImport}
+          >
+            <PhotoCameraOutlined />
+          </IconButton>
         </Box>
       </Box>
 
       <Box display='flex' flexDirection='column' gap={1}>
-        <Typography level='title-sm'>Tên</Typography>
+        <Typography level='title-sm' className='required'>
+          Tên
+        </Typography>
         <Input
           {...register('name', {
             required: true,
           })}
         />
-        <Typography level='title-sm'>Kích cỡ</Typography>
+        <Typography level='title-sm' className='required'>
+          Kích cỡ
+        </Typography>
         {!!prices.length && (
           <Box
             p={1}
@@ -156,20 +185,46 @@ export default function AddCakeModal({ open, onClose }: Props) {
           onClick={() => {
             setPrices((prev) => [...prev, getInitPrice()]);
           }}
+          ref={pricesField.ref}
         >
           <AddOutlined />
         </IconButton>
-        <Typography level='title-sm'>Loại bánh</Typography>
+        <Typography level='title-sm' className='required'>
+          Loại bánh
+        </Typography>
         <Autocomplete
+          value={getCategoryQR.data?.filter((cate) =>
+            categoryIds?.includes(cate.id),
+          )}
           multiple
-          options={
-            getCategoryQR.data?.map((cate) => ({
-              ...cate,
-              label: cate.name,
-            })) ?? []
+          options={getCategoryQR.data ?? []}
+          getOptionLabel={(option) => option.name}
+          renderTags={(tags, getTagProps) =>
+            tags.map((item, index) => {
+              const { key, ...props } = getTagProps({ index });
+              return (
+                <Chip
+                  key={key}
+                  color='primary'
+                  endDecorator={<Close fontSize='small' />}
+                  {...props}
+                >
+                  {item.name}
+                </Chip>
+              );
+            })
           }
-          // defaultValue={[top100Films[0]]}
-          {...register('categoryIds')}
+          onChange={(_, categories) => {
+            setValue(
+              'categoryIds',
+              categories.map((cate) => cate.id),
+            );
+          }}
+          slotProps={{
+            input: {
+              ref: categoryIdsField.ref,
+            },
+          }}
         />
         <Typography level='title-sm'>Mô tả</Typography>
         <Textarea {...register('desc')} />

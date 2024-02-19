@@ -96,8 +96,14 @@ export default function PriceInput({ value, onChange, onDelete }: Props) {
           {...register('price', {
             required: true,
           })}
+          fullWidth
         />
-        <Input placeholder='Giá cũ' type='number' {...register('oldPrice')} />
+        <Input
+          placeholder='Giá cũ'
+          type='number'
+          {...register('oldPrice')}
+          fullWidth
+        />
       </Box>
       <Box display='flex' justifyContent='flex-end' gap={1}>
         <IconButton

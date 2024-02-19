@@ -153,17 +153,19 @@ export default function CakeTableRow(props: CakeTableRowProps) {
               </MenuItem>
             </Menu>
           </Dropdown>
-          <IconButton
-            size='sm'
-            onClick={() => setIsExpandDesc((prev) => !prev)}
-          >
-            <ExpandMoreOutlined
-              sx={{
-                rotate: isExpandDesc ? '180deg' : '0deg',
-                transition: 'rotate 0.2s ease-out',
-              }}
-            />
-          </IconButton>
+          {!!desc && (
+            <IconButton
+              size='sm'
+              onClick={() => setIsExpandDesc((prev) => !prev)}
+            >
+              <ExpandMoreOutlined
+                sx={{
+                  rotate: isExpandDesc ? '180deg' : '0deg',
+                  transition: 'rotate 0.2s ease-out',
+                }}
+              />
+            </IconButton>
+          )}
         </Box>
       </Box>
       <MyModal
