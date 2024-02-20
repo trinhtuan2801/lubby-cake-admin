@@ -1,9 +1,11 @@
 import { uploadImage } from '@/firebase/utils';
 import { useMutation } from '@tanstack/react-query';
-import { ChangeEvent, HTMLProps, useEffect, useRef } from 'react';
+import { ChangeEvent, HTMLProps, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export default function useUploadImage(file?: File) {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   const uploadMT = useMutation({
     mutationFn: (file: File) => uploadImage(file),
     onError: (err) => {
@@ -14,6 +16,11 @@ export default function useUploadImage(file?: File) {
   useEffect(() => {
     if (file) uploadMT.mutate(file);
   }, [file]);
+
+  useEffect(() => {
+    const imageUrl = uploadMT.data;
+    setImageUrl(imageUrl ? imageUrl : null);
+  }, [uploadMT.data]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +44,8 @@ export default function useUploadImage(file?: File) {
       />
     ),
     triggerImport: () => inputRef.current?.click(),
-    ...uploadMT,
+    imageUrl,
+    clearImage: () => setImageUrl(null),
+    imageMT: uploadMT,
   };
 }

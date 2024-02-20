@@ -48,7 +48,16 @@ export default function MyModal({
             <Typography level='title-lg'>{title}</Typography>
           )}
         </Box>
-        <Box overflow='auto'>{children}</Box>
+        <Box
+          sx={{
+            overflowX: 'visible',
+            overflowY: 'auto',
+            mx: 'calc(-1 * var(--Card-padding))',
+            px: 'var(--Card-padding)',
+          }}
+        >
+          {children}
+        </Box>
         <Box display='flex' justifyContent='flex-end' columnGap={1} mt={1}>
           {!!onOk && (
             <Button {...OkButtonProps} onClick={onOk}>

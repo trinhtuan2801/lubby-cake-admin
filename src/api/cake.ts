@@ -25,6 +25,8 @@ export interface CakeWithoutId {
   categories: Category[];
 }
 
+export interface NewCakeForm extends Omit<CakeWithoutId, 'categories'> {}
+
 export interface Cake extends CakeWithoutId {
   id: string;
 }
@@ -51,8 +53,8 @@ export const deleteCake = (id: string) => {
   return deleteDocument(COLLECTION.Cakes, id);
 };
 
-export const addCake = async (newCate: CakeWithoutId) => {
-  return addDocument(COLLECTION.Cakes, newCate);
+export const addCake = async (newCake: NewCakeForm) => {
+  return addDocument(COLLECTION.Cakes, newCake);
 };
 
 export const updateCake = async (

@@ -1,6 +1,6 @@
 import { QUERY_KEY } from '@/api/queryKeys';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Box, Chip, IconButton, Input, Skeleton, Typography } from '@mui/joy';
 import {
   Add,
@@ -11,25 +11,14 @@ import {
   SentimentDissatisfiedOutlined,
 } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
-import { CakeWithoutId, addCake, getCakes } from '@/api/cake';
+import { getCakes } from '@/api/cake';
 import { normalizeStr } from '@/utils/string-utils';
 import CakeTableRow from './CakeTableRow';
 import { getCategories } from '@/api/category';
 import { isAinB } from '@/utils/array-utils';
-import AddCakeModal from './AddCakeModal/AddCakeModal';
-
-const initCake: CakeWithoutId = {
-  name: '',
-  desc: '',
-  prices: [],
-  images: [],
-  categoryIds: [],
-  categories: [],
-};
+import CakeModal from './CakeModal/CakeModal';
 
 export default function CakeTable() {
-  const queryClient = useQueryClient();
   const getCategoryQR = useQuery({
     queryKey: [QUERY_KEY.Categories],
     queryFn: getCategories,
@@ -44,26 +33,11 @@ export default function CakeTable() {
   const cakes = getCakeQR.data;
 
   const [searchWord, setSearchWord] = useState('');
-  const [newCake, setNewCake] = useState<CakeWithoutId>(initCake);
 
   const [showFilter, setShowFilter] = useState(false);
   const [checkedChips, setCheckedChips] = useState<string[]>([]);
 
   const [openAddModal, setOpenAddModal] = useState(false);
-
-  // eslint-disable-next-line
-  const addCakeMT = useMutation({
-    mutationFn: () => addCake(newCake),
-    onSuccess: () => {
-      setNewCake({ ...initCake });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.Cakes],
-      });
-    },
-    onError: () => {
-      toast.error('Lỗi khi thêm');
-    },
-  });
 
   const renderedData = useMemo(() => {
     if (!cakes) return [];
@@ -178,10 +152,7 @@ export default function CakeTable() {
             </Typography>
           )}
       </Box>
-      <AddCakeModal
-        open={openAddModal}
-        onClose={() => setOpenAddModal(false)}
-      />
+      <CakeModal open={openAddModal} onClose={() => setOpenAddModal(false)} />
     </>
   );
 }
