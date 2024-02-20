@@ -13,7 +13,7 @@ import {
   Textarea,
   Typography,
 } from '@mui/joy';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import PriceInput from './PriceInput';
 import { SubmitHandler, useForm, SubmitErrorHandler } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
@@ -27,10 +27,10 @@ interface Props {
 
 interface CakeForm {
   images: string[];
-  prices: CakePrice[];
   name: string;
-  desc: string;
+  prices: CakePrice[];
   categoryIds: string[];
+  desc: string;
 }
 
 // eslint-disable-next-line
@@ -48,49 +48,69 @@ export default function AddCakeModal({ open, onClose }: Props) {
     queryKey: [QUERY_KEY.Categories],
     queryFn: getCategories,
   });
-  const { ImportComponent, triggerImport, data } = useUploadImage();
-  const { register, handleSubmit, setValue, watch } = useForm<CakeForm>();
+  const { ImportComponent, triggerImport, data: imageUrl } = useUploadImage();
+  const { register, handleSubmit, setValue, watch, reset } = useForm<CakeForm>({
+    defaultValues: {
+      images: [],
+      name: '',
+      prices: [],
+      categoryIds: [],
+      desc: '',
+    },
+  });
 
-  // eslint-disable-next-line
-  const [prices, setPrices] = useState<CakePrice[]>([]);
+  const categoryIds = watch('categoryIds');
+  const prices = watch('prices');
 
   useEffect(() => {
-    if (!open) setPrices([]);
+    if (!open) {
+      reset(undefined, {
+        keepDefaultValues: true,
+      });
+    }
   }, [open]);
 
-  const categoryIdsField = useMemo(() => {
-    return register('categoryIds', {
-      validate: {
-        required: (value) => !!value.length,
-      },
-    });
-  }, [register]);
-
-  const pricesField = useMemo(() => {
-    return register('prices', {
-      validate: {
-        required: (value) => !!value.length,
-      },
-    });
+  const customRegisters = useMemo(() => {
+    const result = {
+      images: register('images', {
+        validate: {
+          required: (value) => !!value.length || 'Bạn chưa thêm ảnh',
+        },
+      }),
+      categoryIds: register('categoryIds', {
+        validate: {
+          required: (value) => !!value.length,
+        },
+      }),
+      prices: register('prices', {
+        validate: {
+          required: (value) => !!value.length || 'Bạn chưa thêm cỡ',
+        },
+      }),
+    };
+    setTimeout(() => {
+      reset(undefined, { keepDefaultValues: true });
+    }, 1000);
+    return result;
   }, [register]);
 
   const onChangePrice = (id: string, newData: CakePriceWithoutId) => {
-    const newPrices = [...prices];
-    const index = newPrices.findIndex((oldData) => oldData.id === id);
+    const index = prices.findIndex((oldData) => oldData.id === id);
     if (index === -1) return;
-    newPrices[index] = {
-      ...newPrices[index],
-      ...newData,
-    };
-    setPrices(newPrices);
+    prices[index] = { id, ...newData };
+    setValue('prices', prices);
   };
 
   const onDeletePrice = (id: string) => {
-    const newPrices = [...prices];
-    const index = newPrices.findIndex((oldData) => oldData.id === id);
+    const index = prices.findIndex((oldData) => oldData.id === id);
     if (index === -1) return;
-    newPrices.splice(index, 1);
-    setPrices(newPrices);
+    prices.splice(index, 1);
+    setValue('prices', prices);
+  };
+
+  const onAddPrice = () => {
+    prices.push(getInitPrice());
+    setValue('prices', prices);
   };
 
   const onSubmit: SubmitHandler<CakeForm> = (formData) => {
@@ -101,13 +121,14 @@ export default function AddCakeModal({ open, onClose }: Props) {
   const onInvalid: SubmitErrorHandler<CakeForm> = (errors) => {
     // eslint-disable-next-line
     console.log('errors', errors);
+    if (errors.prices) {
+      errors.prices.ref?.focus?.();
+    }
   };
 
-  const categoryIds = watch('categoryIds');
-
   useEffect(() => {
-    setValue('prices', prices);
-  }, [prices]);
+    if (imageUrl) setValue('images', [imageUrl]);
+  }, [imageUrl]);
 
   return (
     <MyModal
@@ -124,8 +145,8 @@ export default function AddCakeModal({ open, onClose }: Props) {
             sx={{ width: 100, borderRadius: 'md' }}
             objectFit='cover'
           >
-            {data && (
-              <img src={data} style={{ border: 'none', outline: 'none' }} />
+            {!!imageUrl && (
+              <img src={imageUrl} style={{ border: 'none', outline: 'none' }} />
             )}
           </AspectRatio>
           <IconButton
@@ -138,6 +159,7 @@ export default function AddCakeModal({ open, onClose }: Props) {
             variant='solid'
             color='primary'
             onClick={triggerImport}
+            ref={customRegisters.images.ref}
           >
             <PhotoCameraOutlined />
           </IconButton>
@@ -154,7 +176,7 @@ export default function AddCakeModal({ open, onClose }: Props) {
           })}
         />
         <Typography level='title-sm' className='required'>
-          Kích cỡ
+          Cỡ & Giá
         </Typography>
         {!!prices.length && (
           <Box
@@ -182,10 +204,8 @@ export default function AddCakeModal({ open, onClose }: Props) {
           variant='solid'
           color='primary'
           size='sm'
-          onClick={() => {
-            setPrices((prev) => [...prev, getInitPrice()]);
-          }}
-          ref={pricesField.ref}
+          onClick={onAddPrice}
+          ref={customRegisters.prices.ref}
         >
           <AddOutlined />
         </IconButton>
@@ -222,9 +242,12 @@ export default function AddCakeModal({ open, onClose }: Props) {
           }}
           slotProps={{
             input: {
-              ref: categoryIdsField.ref,
+              ref: customRegisters.categoryIds.ref,
             },
           }}
+          openOnFocus
+          disableCloseOnSelect
+          noOptionsText='Bấm Enter để thêm loại mới'
         />
         <Typography level='title-sm'>Mô tả</Typography>
         <Textarea {...register('desc')} />
