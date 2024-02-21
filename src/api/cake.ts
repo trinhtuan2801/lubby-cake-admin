@@ -9,7 +9,7 @@ import { Category } from './category';
 
 export interface CakePriceWithoutId {
   size: string;
-  price: number;
+  price: number | null;
   oldPrice: number | null;
 }
 export interface CakePrice extends CakePriceWithoutId {
@@ -25,7 +25,7 @@ export interface CakeWithoutId {
   categories: Category[];
 }
 
-export interface NewCakeForm extends Omit<CakeWithoutId, 'categories'> {}
+export interface CakeForm extends Omit<CakeWithoutId, 'categories'> {}
 
 export interface Cake extends CakeWithoutId {
   id: string;
@@ -53,13 +53,13 @@ export const deleteCake = (id: string) => {
   return deleteDocument(COLLECTION.Cakes, id);
 };
 
-export const addCake = async (newCake: NewCakeForm) => {
+export const addCake = async (newCake: CakeForm) => {
   return addDocument(COLLECTION.Cakes, newCake);
 };
 
 export const updateCake = async (
   id: string,
-  updatedData: Partial<CakeWithoutId>,
+  updatedData: Partial<CakeForm>,
 ) => {
   return updateDocument(COLLECTION.Cakes, id, updatedData);
 };

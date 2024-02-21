@@ -1,4 +1,4 @@
-import { Cake, CakeWithoutId, deleteCake, updateCake } from '@/api/cake';
+import { Cake, deleteCake } from '@/api/cake';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
 import { numberWithCommas } from '@/utils/string-utils';
@@ -21,8 +21,9 @@ import {
   Typography,
 } from '@mui/joy';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
+import CakeModal from './CakeModal/CakeModal';
 
 interface CakeTableRowProps extends Cake {}
 
@@ -30,23 +31,8 @@ export default function CakeTableRow(props: CakeTableRowProps) {
   const { id, name, images, prices, desc, categories } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
-  const [newData, setNewData] = useState<Partial<CakeWithoutId>>({});
   const [openDelete, setOpenDelete] = useState(false);
   const [isExpandDesc, setIsExpandDesc] = useState(false);
-
-  // eslint-disable-next-line
-  const updateCakeMT = useMutation({
-    mutationFn: () => updateCake(id, newData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.Cakes],
-      });
-      setOpenEdit(false);
-    },
-    onError: () => {
-      toast.error('Lỗi khi cập nhật');
-    },
-  });
 
   const deleteCakeMT = useMutation({
     mutationFn: () => deleteCake(id),
@@ -60,10 +46,6 @@ export default function CakeTableRow(props: CakeTableRowProps) {
       toast.error('Lỗi khi xóa');
     },
   });
-
-  useEffect(() => {
-    if (openEdit) setNewData(props);
-  }, [openEdit]);
 
   return (
     <>
@@ -192,6 +174,11 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           </Typography>
         </Typography>
       </MyModal>
+      <CakeModal
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        initData={props}
+      />
     </>
   );
 }

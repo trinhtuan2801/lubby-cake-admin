@@ -45,7 +45,7 @@ export default function MyModal({
           {typeof title === 'object' ? (
             title
           ) : (
-            <Typography level='title-lg'>{title}</Typography>
+            <Typography level='title-md'>{title}</Typography>
           )}
         </Box>
         <Box

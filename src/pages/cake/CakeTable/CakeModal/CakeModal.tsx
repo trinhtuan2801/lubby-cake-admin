@@ -1,8 +1,10 @@
 import {
+  Cake,
   CakePrice,
   CakePriceWithoutId,
-  NewCakeForm,
+  CakeForm,
   addCake,
+  updateCake,
 } from '@/api/cake';
 import MyModal from '@/components/MyModal/MyModal';
 import useUploadImage from '@/hooks/useUploadImage';
@@ -30,33 +32,29 @@ import { toast } from 'react-toastify';
 interface Props {
   open: boolean;
   onClose: () => void;
-}
-
-interface CakeForm {
-  images: string[];
-  name: string;
-  prices: CakePrice[];
-  categoryIds: string[];
-  desc: string;
+  initData?: Cake;
 }
 
 const getInitPrice = (): CakePrice => {
   return {
     id: genIdByDate(),
     size: '',
-    price: 0,
+    price: null,
     oldPrice: null,
   };
 };
 
-export default function CakeModal({ open, onClose }: Props) {
+export default function CakeModal({ open, onClose, initData }: Props) {
+  const mode = initData ? 'edit' : 'add';
   const queryClient = useQueryClient();
+
   const getCategoryQR = useQuery({
     queryKey: [QUERY_KEY.Categories],
     queryFn: getCategories,
   });
+
   const addCakeMT = useMutation({
-    mutationFn: (newCake: NewCakeForm) => addCake(newCake),
+    mutationFn: (newCake: CakeForm) => addCake(newCake),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.Cakes],
@@ -68,8 +66,30 @@ export default function CakeModal({ open, onClose }: Props) {
       toast.error('Lỗi khi thêm');
     },
   });
-  const { ImportComponent, triggerImport, imageUrl, clearImage, imageMT } =
-    useUploadImage();
+
+  const updateCakeMT = useMutation({
+    mutationFn: (updatedData: Partial<CakeForm>) =>
+      updateCake(initData?.id ?? '', updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.Cakes],
+      });
+      onClose();
+      toast.success('Cập nhật thành công');
+    },
+    onError: () => {
+      toast.error('Lỗi khi cập nhật');
+    },
+  });
+
+  const {
+    ImportComponent,
+    triggerImport,
+    clearImage,
+    imageMT,
+    uploadImageUrl,
+  } = useUploadImage();
+
   const {
     register,
     handleSubmit,
@@ -90,6 +110,7 @@ export default function CakeModal({ open, onClose }: Props) {
 
   const categoryIds = watch('categoryIds');
   const prices = watch('prices');
+  const images = watch('images');
 
   useEffect(() => {
     if (!open) {
@@ -100,6 +121,14 @@ export default function CakeModal({ open, onClose }: Props) {
       clearImage();
     }
   }, [open]);
+
+  useEffect(() => {
+    if (initData) {
+      // eslint-disable-next-line
+      const { id, categories, ...cakeForm } = initData;
+      reset(cakeForm);
+    }
+  }, [initData]);
 
   const registers = useMemo(() => {
     return {
@@ -125,21 +154,21 @@ export default function CakeModal({ open, onClose }: Props) {
     };
   }, [register]);
 
-  const onChangePrice = (id: string, newData: CakePriceWithoutId) => {
+  const updatePrice = (id: string, newData: CakePriceWithoutId) => {
     const index = prices.findIndex((oldData) => oldData.id === id);
     if (index === -1) return;
     prices[index] = { id, ...newData };
     setValue('prices', prices);
   };
 
-  const onDeletePrice = (id: string) => {
+  const deletePrice = (id: string) => {
     const index = prices.findIndex((oldData) => oldData.id === id);
     if (index === -1) return;
     prices.splice(index, 1);
     setValue('prices', prices);
   };
 
-  const onAddPrice = () => {
+  const addNewPrice = () => {
     prices.push(getInitPrice());
     setValue('prices', prices);
     clearErrors('prices');
@@ -148,21 +177,25 @@ export default function CakeModal({ open, onClose }: Props) {
   const onSubmit: SubmitHandler<CakeForm> = (formData) => {
     // eslint-disable-next-line
     console.log('formData', formData);
-    addCakeMT.mutate(formData);
+    if (mode === 'add') {
+      addCakeMT.mutate(formData);
+    } else if (mode === 'edit') {
+      updateCakeMT.mutate(formData);
+    }
   };
 
   useEffect(() => {
-    if (imageUrl) {
-      setValue('images', [imageUrl]);
+    if (uploadImageUrl) {
+      setValue('images', [uploadImageUrl]);
       clearErrors('images');
     }
-  }, [imageUrl]);
+  }, [uploadImageUrl]);
 
   return (
     <MyModal
       open={open}
       onClose={onClose}
-      OkButtonLabel='Thêm'
+      OkButtonLabel={mode === 'add' ? 'Thêm' : 'Cập nhật'}
       onOk={handleSubmit(onSubmit)}
       OkButtonProps={{
         loading: addCakeMT.isPending,
@@ -170,6 +203,7 @@ export default function CakeModal({ open, onClose }: Props) {
       CancelButtonProps={{
         disabled: addCakeMT.isPending,
       }}
+      title={mode === 'add' ? 'Thêm bánh' : 'Sửa thông tin'}
     >
       <ImportComponent />
       <Box display='flex' justifyContent='center'>
@@ -179,8 +213,11 @@ export default function CakeModal({ open, onClose }: Props) {
             sx={{ width: 100, borderRadius: 'md' }}
             objectFit='cover'
           >
-            {!!imageUrl && (
-              <img src={imageUrl} style={{ border: 'none', outline: 'none' }} />
+            {!!images[0] && (
+              <img
+                src={images[0]}
+                style={{ border: 'none', outline: 'none' }}
+              />
             )}
           </AspectRatio>
 
@@ -239,8 +276,8 @@ export default function CakeModal({ open, onClose }: Props) {
               <PriceInput
                 key={price.id}
                 value={price}
-                onChange={onChangePrice}
-                onDelete={onDeletePrice}
+                onChange={updatePrice}
+                onDelete={deletePrice}
               />
             ))}
           </Box>
@@ -252,7 +289,7 @@ export default function CakeModal({ open, onClose }: Props) {
             variant='solid'
             color='primary'
             size='sm'
-            onClick={onAddPrice}
+            onClick={addNewPrice}
             ref={registers.prices.ref}
           >
             <AddOutlined />

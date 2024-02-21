@@ -86,7 +86,15 @@ export default function CategoryTableRow({ id, name }: CategoryTableRowProps) {
           updateCategoryMT.mutate();
         }}
       >
-        <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+        <Input
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && newName) {
+              updateCategoryMT.mutate();
+            }
+          }}
+        />
       </MyModal>
       <MyModal
         open={openDelete}

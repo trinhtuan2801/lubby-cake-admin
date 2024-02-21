@@ -26,6 +26,8 @@ export default function useUploadImage(file?: File) {
 
   const onChooseFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // eslint-disable-next-line
+    console.log('import file', file);
     if (file) {
       uploadMT.mutate(file);
     }
@@ -44,7 +46,7 @@ export default function useUploadImage(file?: File) {
       />
     ),
     triggerImport: () => inputRef.current?.click(),
-    imageUrl,
+    uploadImageUrl: imageUrl,
     clearImage: () => setImageUrl(null),
     imageMT: uploadMT,
   };
