@@ -1,4 +1,4 @@
-import { COLLECTION } from '@/constants';
+import { Age, COLLECTION, Gender } from '@/constants';
 import {
   addDocument,
   deleteDocument,
@@ -23,6 +23,8 @@ export interface CakeWithoutId {
   images: string[];
   categoryIds: string[];
   categories: Category[];
+  age: Age | null;
+  gender: Gender | null;
 }
 
 export interface CakeForm extends Omit<CakeWithoutId, 'categories'> {}

@@ -24,11 +24,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import CakeModal from './CakeModal/CakeModal';
+import { AgeStr, GenderStr } from '@/constants';
 
 interface CakeTableRowProps extends Cake {}
 
 export default function CakeTableRow(props: CakeTableRowProps) {
-  const { id, name, images, prices, desc, categories } = props;
+  const { id, name, images, prices, desc, categories, gender, age } = props;
   const queryClient = useQueryClient();
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -95,6 +96,16 @@ export default function CakeTableRow(props: CakeTableRowProps) {
             ))}
           </Box>
           <Box display='flex' gap={0.5} flexWrap='wrap' mt={0.5}>
+            {gender !== null && (
+              <Chip variant='outlined' color='primary' size='sm'>
+                {GenderStr[gender]}
+              </Chip>
+            )}
+            {age !== null && (
+              <Chip variant='outlined' color='primary' size='sm'>
+                {AgeStr[age]} tuổi
+              </Chip>
+            )}
             {categories.map((cate) => (
               <Chip key={cate.id} variant='outlined' color='primary' size='sm'>
                 {cate.name}

@@ -17,6 +17,14 @@ import CakeTableRow from './CakeTableRow';
 import { getCategories } from '@/api/category';
 import { isAinB } from '@/utils/array-utils';
 import CakeModal from './CakeModal/CakeModal';
+import {
+  Age,
+  AgeStr,
+  Gender,
+  GenderStr,
+  ageKeys,
+  genderKeys,
+} from '@/constants';
 
 export default function CakeTable() {
   const getCategoryQR = useQuery({
@@ -35,32 +43,55 @@ export default function CakeTable() {
   const [searchWord, setSearchWord] = useState('');
 
   const [showFilter, setShowFilter] = useState(false);
-  const [checkedChips, setCheckedChips] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedGender, setSelectedGender] = useState<Gender | null>(null);
+  const [selectedAge, setSelectedAge] = useState<Age | null>(null);
 
   const [openAddModal, setOpenAddModal] = useState(false);
 
-  const renderedData = useMemo(() => {
+  const renderedCakes = useMemo(() => {
     if (!cakes) return [];
     let result = [];
     result = cakes.filter(({ name }) =>
       normalizeStr(name).includes(normalizeStr(searchWord)),
     );
-    if (showFilter)
+    if (showFilter) {
       result = result.filter(({ categoryIds }) =>
-        isAinB(checkedChips, categoryIds),
+        isAinB(selectedCategories, categoryIds),
       );
+      if (selectedGender !== null)
+        result = result.filter(({ gender }) => gender === selectedGender);
+      if (selectedAge !== null)
+        result = result.filter(({ age }) => age === selectedAge);
+    }
+
     return result;
-  }, [searchWord, cakes, checkedChips, showFilter]);
+  }, [
+    searchWord,
+    cakes,
+    selectedCategories,
+    showFilter,
+    selectedGender,
+    selectedAge,
+  ]);
 
   const onClickChip = (id: string) => {
-    const newCheckedChips = checkedChips.slice();
+    const newCheckedChips = selectedCategories.slice();
     const index = newCheckedChips.indexOf(id);
     if (index === -1) {
       newCheckedChips.push(id);
     } else {
       newCheckedChips.splice(index, 1);
     }
-    setCheckedChips(newCheckedChips);
+    setSelectedCategories(newCheckedChips);
+  };
+
+  const onClickGender = (gender: Gender) => {
+    setSelectedGender(selectedGender === gender ? null : gender);
+  };
+
+  const onClickAge = (age: Age) => {
+    setSelectedAge(selectedAge === age ? null : age);
   };
 
   return (
@@ -98,8 +129,44 @@ export default function CakeTable() {
         </IconButton>
       </Box>
       <Box display={showFilter ? 'flex' : 'none'} gap={0.5}>
+        {genderKeys.map((gender) => {
+          const checked = selectedGender === gender;
+          return (
+            <Chip
+              key={gender}
+              variant={checked ? 'solid' : 'outlined'}
+              color={checked ? 'primary' : 'neutral'}
+              startDecorator={
+                checked && (
+                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
+                )
+              }
+              onClick={() => onClickGender(gender)}
+            >
+              {GenderStr[gender]}
+            </Chip>
+          );
+        })}
+        {ageKeys.map((age) => {
+          const checked = selectedAge === age;
+          return (
+            <Chip
+              key={age}
+              variant={checked ? 'solid' : 'outlined'}
+              color={checked ? 'primary' : 'neutral'}
+              startDecorator={
+                checked && (
+                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
+                )
+              }
+              onClick={() => onClickAge(age)}
+            >
+              {AgeStr[age]} tuổi
+            </Chip>
+          );
+        })}
         {categories?.map((cate) => {
-          const checked = checkedChips.includes(cate.id);
+          const checked = selectedCategories.includes(cate.id);
           return (
             <Chip
               key={cate.id}
@@ -127,7 +194,7 @@ export default function CakeTable() {
         gap={1}
         mt={0.5}
       >
-        {renderedData.map((row) => (
+        {renderedCakes.map((row) => (
           <CakeTableRow key={row.id} {...row} />
         ))}
         {getCakeQR.isPending &&
@@ -140,17 +207,20 @@ export default function CakeTable() {
                 sx={{ borderRadius: '6px', minHeight: '100px' }}
               />
             ))}
-        {!getCakeQR.isPending &&
-          !renderedData.length &&
-          ((showFilter && checkedChips.length) || searchWord) && (
+        {(showFilter || searchWord) &&
+          cakes?.length !== 0 &&
+          renderedCakes.length === 0 && (
             <Typography
               sx={{ display: 'flex', alignItems: 'center' }}
-              color='danger'
+              color='neutral'
             >
               <SentimentDissatisfiedOutlined />
               &nbsp;Không tìm thấy bánh phù hợp
             </Typography>
           )}
+        {!getCakeQR.isPending && cakes?.length === 0 && (
+          <Typography color='neutral'>Không có dữ liệu</Typography>
+        )}
       </Box>
       <CakeModal open={openAddModal} onClose={() => setOpenAddModal(false)} />
     </>

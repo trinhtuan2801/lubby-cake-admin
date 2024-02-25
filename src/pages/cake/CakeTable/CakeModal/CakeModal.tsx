@@ -1,18 +1,30 @@
 import {
   Cake,
+  CakeForm,
   CakePrice,
   CakePriceWithoutId,
-  CakeForm,
   addCake,
   updateCake,
 } from '@/api/cake';
+import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
+import {
+  Age,
+  AgeStr,
+  Gender,
+  GenderStr,
+  ageKeys,
+  genderKeys,
+} from '@/constants';
 import useUploadImage from '@/hooks/useUploadImage';
 import { genIdByDate } from '@/utils/string-utils';
-import { AddOutlined, Close, PhotoCameraOutlined } from '@mui/icons-material';
+import {
+  AddOutlined,
+  CheckOutlined,
+  PhotoCameraOutlined,
+} from '@mui/icons-material';
 import {
   AspectRatio,
-  Autocomplete,
   Box,
   Chip,
   CircularProgress,
@@ -21,13 +33,11 @@ import {
   Textarea,
   Typography,
 } from '@mui/joy';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
-import PriceInput from './PriceInput';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEY } from '@/api/queryKeys';
-import { getCategories } from '@/api/category';
 import { toast } from 'react-toastify';
+import PriceInput from './PriceInput';
 
 interface Props {
   open: boolean;
@@ -48,10 +58,10 @@ export default function CakeModal({ open, onClose, initData }: Props) {
   const mode = initData ? 'edit' : 'add';
   const queryClient = useQueryClient();
 
-  const getCategoryQR = useQuery({
-    queryKey: [QUERY_KEY.Categories],
-    queryFn: getCategories,
-  });
+  // const getCategoryQR = useQuery({
+  //   queryKey: [QUERY_KEY.Categories],
+  //   queryFn: getCategories,
+  // });
 
   const addCakeMT = useMutation({
     mutationFn: (newCake: CakeForm) => addCake(newCake),
@@ -96,6 +106,7 @@ export default function CakeModal({ open, onClose, initData }: Props) {
     setValue,
     watch,
     reset,
+    // eslint-disable-next-line
     formState: { errors },
     clearErrors,
   } = useForm<CakeForm>({
@@ -105,12 +116,40 @@ export default function CakeModal({ open, onClose, initData }: Props) {
       prices: [],
       categoryIds: [],
       desc: '',
+      gender: null,
+      age: null,
     },
   });
 
-  const categoryIds = watch('categoryIds');
+  const registers = useMemo(() => {
+    return {
+      images: register('images', {
+        validate: {
+          required: (value) => !!value.length || 'Bạn chưa thêm ảnh',
+        },
+      }),
+      name: register('name', {
+        required: true,
+      }),
+      prices: register('prices', {
+        validate: {
+          required: (value) => !!value.length || 'Bạn chưa thêm cỡ',
+        },
+      }),
+      // categoryIds: register('categoryIds', {
+      //   validate: {
+      //     required: (value) => !!value.length,
+      //   },
+      // }),
+    };
+  }, [register]);
+
+  // const categoryIds = watch('categoryIds');
   const prices = watch('prices');
   const images = watch('images');
+  const selectedGender = watch('gender');
+  const selectedAge = watch('age');
+  const desc = watch('desc');
 
   useEffect(() => {
     if (!open) {
@@ -130,29 +169,13 @@ export default function CakeModal({ open, onClose, initData }: Props) {
     }
   }, [initData]);
 
-  const registers = useMemo(() => {
-    return {
-      images: register('images', {
-        validate: {
-          required: (value) => !!value.length || 'Bạn chưa thêm ảnh',
-        },
-      }),
-      name: register('name', {
-        required: true,
-      }),
-      prices: register('prices', {
-        validate: {
-          required: (value) => !!value.length || 'Bạn chưa thêm cỡ',
-        },
-      }),
-      categoryIds: register('categoryIds', {
-        validate: {
-          required: (value) => !!value.length,
-        },
-      }),
-      desc: register('desc'),
-    };
-  }, [register]);
+  const onClickGender = (gender: Gender) => {
+    setValue('gender', selectedGender === gender ? null : gender);
+  };
+
+  const onClickAge = (age: Age) => {
+    setValue('age', selectedAge === age ? null : age);
+  };
 
   const updatePrice = (id: string, newData: CakePriceWithoutId) => {
     const index = prices.findIndex((oldData) => oldData.id === id);
@@ -242,17 +265,6 @@ export default function CakeModal({ open, onClose, initData }: Props) {
           </Box>
         </Box>
       </Box>
-      {!!errors.images && !imageMT.isPending && (
-        <Typography
-          className='bounce'
-          mt={0.5}
-          color='danger'
-          level='body-sm'
-          textAlign='center'
-        >
-          Bạn chưa thêm ảnh
-        </Typography>
-      )}
       <Box display='flex' flexDirection='column' gap={1}>
         <Typography level='title-sm' className='required'>
           Tên
@@ -294,16 +306,50 @@ export default function CakeModal({ open, onClose, initData }: Props) {
           >
             <AddOutlined />
           </IconButton>
-          {!!errors.prices && (
-            <Typography className='bounce' color='danger' level='body-sm'>
-              {errors.prices.message}
-            </Typography>
-          )}
         </Box>
-        <Typography level='title-sm' className='required'>
-          Loại bánh
-        </Typography>
-        <Autocomplete
+        <Typography level='title-sm'>Giới tính</Typography>
+        <Box display='flex' gap={0.5}>
+          {genderKeys.map((gender) => {
+            const checked = selectedGender === gender;
+            return (
+              <Chip
+                key={gender}
+                variant='outlined'
+                color={checked ? 'primary' : 'neutral'}
+                startDecorator={
+                  checked && (
+                    <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
+                  )
+                }
+                onClick={() => onClickGender(gender)}
+              >
+                {GenderStr[gender]}
+              </Chip>
+            );
+          })}
+        </Box>
+        <Typography level='title-sm'>Độ tuổi</Typography>
+        <Box display='flex' gap={0.5}>
+          {ageKeys.map((age) => {
+            const checked = selectedAge === age;
+            return (
+              <Chip
+                key={age}
+                variant='outlined'
+                color={checked ? 'primary' : 'neutral'}
+                startDecorator={
+                  checked && (
+                    <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
+                  )
+                }
+                onClick={() => onClickAge(age)}
+              >
+                {AgeStr[age]} tuổi
+              </Chip>
+            );
+          })}
+        </Box>
+        {/* <Autocomplete
           value={getCategoryQR.data?.filter((cate) =>
             categoryIds?.includes(cate.id),
           )}
@@ -339,9 +385,12 @@ export default function CakeModal({ open, onClose, initData }: Props) {
           openOnFocus
           disableCloseOnSelect
           noOptionsText='Bấm Enter để thêm loại mới'
-        />
+        /> */}
         <Typography level='title-sm'>Mô tả</Typography>
-        <Textarea {...registers.desc} />
+        <Textarea
+          value={desc}
+          onChange={(e) => setValue('desc', e.target.value)}
+        />
       </Box>
     </MyModal>
   );
