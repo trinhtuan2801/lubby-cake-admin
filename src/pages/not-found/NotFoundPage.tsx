@@ -1,3 +1,5 @@
+import { Box } from '@mui/joy';
+
 export default function NotFoundPage() {
-  return <>Not found</>;
+  return <Box>Không tìm thấy trang</Box>;
 }

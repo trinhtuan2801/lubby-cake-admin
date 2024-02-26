@@ -123,6 +123,7 @@ export default function CakeTableRow(props: CakeTableRowProps) {
           display='flex'
           flexDirection='column'
           justifyContent='space-between'
+          pr={0.5}
         >
           <Dropdown>
             <MenuButton

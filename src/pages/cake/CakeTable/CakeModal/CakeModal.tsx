@@ -18,11 +18,7 @@ import {
 } from '@/constants';
 import useUploadImage from '@/hooks/useUploadImage';
 import { genIdByDate } from '@/utils/string-utils';
-import {
-  AddOutlined,
-  CheckOutlined,
-  PhotoCameraOutlined,
-} from '@mui/icons-material';
+import { AddOutlined, PhotoCameraOutlined } from '@mui/icons-material';
 import {
   AspectRatio,
   Box,
@@ -35,7 +31,7 @@ import {
 } from '@mui/joy';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import PriceInput from './PriceInput';
 
@@ -100,26 +96,18 @@ export default function CakeModal({ open, onClose, initData }: Props) {
     uploadImageUrl,
   } = useUploadImage();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    // eslint-disable-next-line
-    formState: { errors },
-    clearErrors,
-  } = useForm<CakeForm>({
-    defaultValues: {
-      images: [],
-      name: '',
-      prices: [],
-      categoryIds: [],
-      desc: '',
-      gender: null,
-      age: null,
-    },
-  });
+  const { register, handleSubmit, setValue, watch, reset, clearErrors } =
+    useForm<CakeForm>({
+      defaultValues: {
+        images: [],
+        name: '',
+        prices: [],
+        categoryIds: [],
+        desc: '',
+        gender: null,
+        age: null,
+      },
+    });
 
   const registers = useMemo(() => {
     return {
@@ -133,7 +121,7 @@ export default function CakeModal({ open, onClose, initData }: Props) {
       }),
       prices: register('prices', {
         validate: {
-          required: (value) => !!value.length || 'Bạn chưa thêm cỡ',
+          required: (value) => !!value.length || 'Bạn chưa thêm cỡ & giá',
         },
       }),
       // categoryIds: register('categoryIds', {
@@ -144,9 +132,9 @@ export default function CakeModal({ open, onClose, initData }: Props) {
     };
   }, [register]);
 
-  // const categoryIds = watch('categoryIds');
-  const prices = watch('prices');
   const images = watch('images');
+  const prices = watch('prices');
+  // const categoryIds = watch('categoryIds');
   const selectedGender = watch('gender');
   const selectedAge = watch('age');
   const desc = watch('desc');
@@ -199,11 +187,20 @@ export default function CakeModal({ open, onClose, initData }: Props) {
 
   const onSubmit: SubmitHandler<CakeForm> = (formData) => {
     // eslint-disable-next-line
-    console.log('formData', formData);
+    console.log('CakeForm', formData);
     if (mode === 'add') {
       addCakeMT.mutate(formData);
     } else if (mode === 'edit') {
       updateCakeMT.mutate(formData);
+    }
+  };
+
+  const onInvalid: SubmitErrorHandler<CakeForm> = (errors) => {
+    const errorKeys = Object.keys(errors) as (keyof CakeForm)[];
+    const toastedErrors: (keyof CakeForm)[] = ['images', 'prices'];
+    if (toastedErrors.includes(errorKeys[0])) {
+      toast.error(errors[errorKeys[0]]?.message);
+      return;
     }
   };
 
@@ -219,7 +216,7 @@ export default function CakeModal({ open, onClose, initData }: Props) {
       open={open}
       onClose={onClose}
       OkButtonLabel={mode === 'add' ? 'Thêm' : 'Cập nhật'}
-      onOk={handleSubmit(onSubmit)}
+      onOk={handleSubmit(onSubmit, onInvalid)}
       OkButtonProps={{
         loading: addCakeMT.isPending,
       }}
@@ -308,7 +305,7 @@ export default function CakeModal({ open, onClose, initData }: Props) {
           </IconButton>
         </Box>
         <Typography level='title-sm'>Giới tính</Typography>
-        <Box display='flex' gap={0.5}>
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
           {genderKeys.map((gender) => {
             const checked = selectedGender === gender;
             return (
@@ -316,11 +313,6 @@ export default function CakeModal({ open, onClose, initData }: Props) {
                 key={gender}
                 variant='outlined'
                 color={checked ? 'primary' : 'neutral'}
-                startDecorator={
-                  checked && (
-                    <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
-                  )
-                }
                 onClick={() => onClickGender(gender)}
               >
                 {GenderStr[gender]}
@@ -329,7 +321,7 @@ export default function CakeModal({ open, onClose, initData }: Props) {
           })}
         </Box>
         <Typography level='title-sm'>Độ tuổi</Typography>
-        <Box display='flex' gap={0.5}>
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
           {ageKeys.map((age) => {
             const checked = selectedAge === age;
             return (
@@ -337,11 +329,6 @@ export default function CakeModal({ open, onClose, initData }: Props) {
                 key={age}
                 variant='outlined'
                 color={checked ? 'primary' : 'neutral'}
-                startDecorator={
-                  checked && (
-                    <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
-                  )
-                }
                 onClick={() => onClickAge(age)}
               >
                 {AgeStr[age]} tuổi

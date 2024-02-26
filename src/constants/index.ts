@@ -1,8 +1,4 @@
-import {
-  CakeRounded,
-  CategoryRounded,
-  StorageRounded,
-} from '@mui/icons-material';
+import { CakeRounded, StorageRounded } from '@mui/icons-material';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
@@ -38,11 +34,11 @@ interface SidebarTab {
 }
 
 export const SidebarTabs: SidebarTab[] = [
-  {
-    Icon: CategoryRounded,
-    name: 'Loại bánh',
-    path: '/categories',
-  },
+  // {
+  //   Icon: CategoryRounded,
+  //   name: 'Loại bánh',
+  //   path: '/categories',
+  // },
   {
     Icon: CakeRounded,
     name: 'Danh sách bánh',

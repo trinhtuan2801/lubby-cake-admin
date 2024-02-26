@@ -1,10 +1,11 @@
 import { CakePrice, CakePriceWithoutId } from '@/api/cake';
 import MyModal from '@/components/MyModal/MyModal';
+import NumberInput from '@/components/NumberInput/NumberInput';
 import { numberWithCommas } from '@/utils/string-utils';
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, IconButton, Input, Typography } from '@mui/joy';
-import { useEffect, useMemo, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 interface Props {
   value: CakePrice;
   onChange: (id: string, newPrice: CakePriceWithoutId) => void;
@@ -16,12 +17,16 @@ export default function PriceInput({
   onChange,
   onDelete,
 }: Props) {
-  const { id } = parentValue;
+  const { id, ...defaultValues } = parentValue;
   const [isEdit, setIsEdit] = useState(parentValue.size ? false : true);
-  const { register, handleSubmit, reset } = useForm<CakePriceWithoutId>();
+  const { register, handleSubmit, reset, control } =
+    useForm<CakePriceWithoutId>({
+      defaultValues,
+    });
+
   const onSubmit: SubmitHandler<CakePriceWithoutId> = (formData) => {
     // eslint-disable-next-line
-    console.log('formData', formData);
+    console.log('PriceForm', formData);
     onChange(id, {
       size: formData.size,
       price: formData.price,
@@ -30,39 +35,14 @@ export default function PriceInput({
     setIsEdit(false);
   };
 
-  const resetToDefaultData = () => {
-    // eslint-disable-next-line
-    const { id, ...formData } = parentValue;
-    reset(formData);
-  };
-
   const cancelEdit = () => {
     if (!parentValue.size) {
       onDelete(id);
     } else {
       setIsEdit(false);
-      resetToDefaultData();
+      reset(defaultValues);
     }
   };
-
-  useEffect(() => {
-    resetToDefaultData();
-  }, [parentValue]);
-
-  const registers = useMemo(() => {
-    return {
-      size: register('size', {
-        required: true,
-      }),
-      price: register('price', {
-        required: true,
-        valueAsNumber: true,
-      }),
-      oldPrice: register('oldPrice', {
-        valueAsNumber: true,
-      }),
-    };
-  }, [register]);
 
   return (
     <Box display='flex' justifyContent='space-between' alignItems='center'>
@@ -101,20 +81,48 @@ export default function PriceInput({
         OkButtonLabel='Lưu'
       >
         <Box display='flex' flexDirection='column' gap={1}>
-          <Typography level='title-sm' className='required'>
-            Cỡ
-          </Typography>
-          <Input {...registers.size} autoFocus />
+          <Box>
+            <Typography level='title-sm' className='required'>
+              Cỡ
+            </Typography>
+            <Input {...register('size', { required: true })} autoFocus />
+          </Box>
           <Box display='flex' gap={1}>
             <Box flexGrow={1} flexBasis={0} overflow='hidden'>
               <Typography level='title-sm' className='required'>
                 Giá bán
               </Typography>
-              <Input type='number' color='success' {...registers.price} />
+
+              <Controller
+                control={control}
+                name='price'
+                render={({ field: { name, onChange, ref, value } }) => (
+                  <NumberInput
+                    name={name}
+                    value={value}
+                    onChange={(value) => onChange(value)}
+                    color='success'
+                    slotProps={{ input: { ref } }}
+                  />
+                )}
+                rules={{
+                  required: true,
+                }}
+              />
             </Box>
             <Box flexGrow={1} flexBasis={0} overflow='hidden'>
               <Typography level='title-sm'>Giá cũ</Typography>
-              <Input type='number' {...registers.oldPrice} />
+              <Controller
+                control={control}
+                name='oldPrice'
+                render={({ field: { name, onChange, value } }) => (
+                  <NumberInput
+                    name={name}
+                    value={value}
+                    onChange={(value) => onChange(value)}
+                  />
+                )}
+              />
             </Box>
           </Box>
         </Box>

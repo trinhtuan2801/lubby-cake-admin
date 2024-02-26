@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Box, Chip, IconButton, Input, Skeleton, Typography } from '@mui/joy';
 import {
   Add,
-  CheckOutlined,
   ClearOutlined,
   FilterAltOutlined,
   SearchOutlined,
@@ -128,61 +127,61 @@ export default function CakeTable() {
           <Add />
         </IconButton>
       </Box>
-      <Box display={showFilter ? 'flex' : 'none'} gap={0.5}>
-        {genderKeys.map((gender) => {
-          const checked = selectedGender === gender;
-          return (
-            <Chip
-              key={gender}
-              variant={checked ? 'solid' : 'outlined'}
-              color={checked ? 'primary' : 'neutral'}
-              startDecorator={
-                checked && (
-                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
-                )
-              }
-              onClick={() => onClickGender(gender)}
-            >
-              {GenderStr[gender]}
-            </Chip>
-          );
-        })}
-        {ageKeys.map((age) => {
-          const checked = selectedAge === age;
-          return (
-            <Chip
-              key={age}
-              variant={checked ? 'solid' : 'outlined'}
-              color={checked ? 'primary' : 'neutral'}
-              startDecorator={
-                checked && (
-                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
-                )
-              }
-              onClick={() => onClickAge(age)}
-            >
-              {AgeStr[age]} tuổi
-            </Chip>
-          );
-        })}
-        {categories?.map((cate) => {
-          const checked = selectedCategories.includes(cate.id);
-          return (
-            <Chip
-              key={cate.id}
-              variant={checked ? 'solid' : 'outlined'}
-              color={checked ? 'primary' : 'neutral'}
-              startDecorator={
-                checked && (
-                  <CheckOutlined sx={{ zIndex: 1, pointerEvents: 'none' }} />
-                )
-              }
-              onClick={() => onClickChip(cate.id)}
-            >
-              {cate.name}
-            </Chip>
-          );
-        })}
+
+      <Box
+        display={showFilter ? 'flex' : 'none'}
+        gap={0.5}
+        flexDirection='column'
+        p={1}
+        border='1px solid'
+        borderColor='neutral.outlinedBorder'
+        borderRadius={6}
+      >
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
+          {genderKeys.map((gender) => {
+            const checked = selectedGender === gender;
+            return (
+              <Chip
+                key={gender}
+                variant='outlined'
+                color={checked ? 'primary' : 'neutral'}
+                onClick={() => onClickGender(gender)}
+              >
+                {GenderStr[gender]}
+              </Chip>
+            );
+          })}
+        </Box>
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
+          {ageKeys.map((age) => {
+            const checked = selectedAge === age;
+            return (
+              <Chip
+                key={age}
+                variant='outlined'
+                color={checked ? 'primary' : 'neutral'}
+                onClick={() => onClickAge(age)}
+              >
+                {AgeStr[age]} tuổi
+              </Chip>
+            );
+          })}
+        </Box>
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
+          {categories?.map((cate) => {
+            const checked = selectedCategories.includes(cate.id);
+            return (
+              <Chip
+                key={cate.id}
+                variant='outlined'
+                color={checked ? 'primary' : 'neutral'}
+                onClick={() => onClickChip(cate.id)}
+              >
+                {cate.name}
+              </Chip>
+            );
+          })}
+        </Box>
       </Box>
       <Box
         flexGrow={1}

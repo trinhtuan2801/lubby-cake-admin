@@ -4,6 +4,7 @@ import { userActions } from './redux/user/userSlice';
 import AppRouter from './router/AppRouter';
 import { useDispatch } from 'react-redux';
 import { getUserData } from './api/user';
+import { Box, CircularProgress } from '@mui/joy';
 
 const { auth } = firebaseServices;
 function App() {
@@ -20,7 +21,18 @@ function App() {
     });
   }, []);
 
-  return isCheckedAuth ? <AppRouter /> : <>Loading...</>;
+  return isCheckedAuth ? (
+    <AppRouter />
+  ) : (
+    <Box
+      height='100vh'
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+    >
+      <CircularProgress />
+    </Box>
+  );
 }
 
 export default App;
