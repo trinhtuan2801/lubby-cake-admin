@@ -19,7 +19,7 @@ export const normalizeStr = (str: string) => {
 };
 
 export const numberWithCommas = (num: number | string | null | undefined) => {
-  if (num === null || num === undefined) return '';
+  if (num == null) return '';
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
