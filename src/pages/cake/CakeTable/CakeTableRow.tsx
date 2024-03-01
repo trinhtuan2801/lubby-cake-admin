@@ -64,37 +64,37 @@ export default function CakeTableRow(props: CakeTableRowProps) {
             </AspectRatio>
           )}
         </Box>
-        <Box pl={1} flexGrow={1} overflow='hidden'>
-          <Typography
-            level='body-sm'
-            sx={{
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              verticalAlign: 'text-top',
-            }}
-            fontWeight='bold'
-            color='primary'
-          >
-            {name}
-          </Typography>
-          <Box>
-            {prices.map(({ size, price, oldPrice, id }) => (
-              <Box key={id} display='flex' gap={1}>
-                <Typography level='body-sm' fontWeight='bold'>
-                  {size}
-                </Typography>
-                <Typography level='body-sm' color='success'>
-                  {numberWithCommas(price)}đ
-                </Typography>
-                {!!oldPrice && (
-                  <Typography level='body-sm'>
-                    ({numberWithCommas(oldPrice)}đ)
+        <Box ml={1} flexGrow={1} overflow='hidden'>
+          <Box overflow='auto'>
+            <Typography
+              level='body-sm'
+              sx={{
+                whiteSpace: 'nowrap',
+              }}
+              fontWeight='bold'
+              color='primary'
+            >
+              {name}
+            </Typography>
+            <Box>
+              {prices.map(({ size, price, oldPrice, id }) => (
+                <Box key={id} display='flex' gap={1}>
+                  <Typography level='body-sm' fontWeight='bold'>
+                    {size}
                   </Typography>
-                )}
-              </Box>
-            ))}
+                  <Typography level='body-sm' color='success'>
+                    {numberWithCommas(price)}đ
+                  </Typography>
+                  {!!oldPrice && (
+                    <Typography level='body-sm'>
+                      ({numberWithCommas(oldPrice)}đ)
+                    </Typography>
+                  )}
+                </Box>
+              ))}
+            </Box>
           </Box>
+
           <Box display='flex' gap={0.5} flexWrap='wrap' mt={0.5}>
             {gender !== null && (
               <Chip variant='outlined' color='primary' size='sm'>

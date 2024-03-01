@@ -63,23 +63,19 @@ export enum SearchParam {
 }
 
 export enum Gender {
-  FEMALE,
-  MALE,
+  FEMALE = 'F',
+  MALE = 'M',
 }
 
-export const genderKeys = Object.values(Gender).filter(
-  (v) => !isNaN(Number(v)),
-) as Gender[];
+export const genderKeys = Object.values(Gender);
 
 export enum Age {
-  ZERO_TO_FIVE,
-  SIX_TO_TWELVE,
-  ABOVE_TWELVE,
+  ZERO_TO_FIVE = '0-5',
+  SIX_TO_TWELVE = '6-12',
+  ABOVE_TWELVE = '12+',
 }
 
-export const ageKeys = Object.values(Age).filter(
-  (v) => !isNaN(Number(v)),
-) as Age[];
+export const ageKeys = Object.values(Age);
 
 export const GenderStr: Record<Gender, string> = {
   [Gender.MALE]: 'Nam',
