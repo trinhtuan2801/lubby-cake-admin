@@ -143,7 +143,7 @@ export default function CakeTable() {
             return (
               <Chip
                 key={gender}
-                variant='outlined'
+                variant={checked ? 'solid' : 'outlined'}
                 color={checked ? 'primary' : 'neutral'}
                 onClick={() => onClickGender(gender)}
               >
@@ -158,7 +158,7 @@ export default function CakeTable() {
             return (
               <Chip
                 key={age}
-                variant='outlined'
+                variant={checked ? 'solid' : 'outlined'}
                 color={checked ? 'primary' : 'neutral'}
                 onClick={() => onClickAge(age)}
               >
