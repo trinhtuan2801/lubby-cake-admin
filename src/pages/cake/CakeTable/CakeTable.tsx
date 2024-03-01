@@ -54,15 +54,13 @@ export default function CakeTable() {
     result = cakes.filter(({ name }) =>
       normalizeStr(name).includes(normalizeStr(searchWord)),
     );
-    if (showFilter) {
-      result = result.filter(({ categoryIds }) =>
-        isAinB(selectedCategories, categoryIds),
-      );
-      if (selectedGender !== null)
-        result = result.filter(({ gender }) => gender === selectedGender);
-      if (selectedAge !== null)
-        result = result.filter(({ age }) => age === selectedAge);
-    }
+    result = result.filter(({ categoryIds }) =>
+      isAinB(selectedCategories, categoryIds),
+    );
+    if (selectedGender !== null)
+      result = result.filter(({ gender }) => gender === selectedGender);
+    if (selectedAge !== null)
+      result = result.filter(({ age }) => age === selectedAge);
 
     return result;
   }, [
@@ -93,6 +91,8 @@ export default function CakeTable() {
     setSelectedAge(selectedAge === age ? null : age);
   };
 
+  const isFilterByTag = selectedAge !== null || selectedGender !== null;
+
   return (
     <>
       <Box display='flex' gap={1}>
@@ -116,8 +116,8 @@ export default function CakeTable() {
           }
         />
         <IconButton
-          variant={showFilter ? 'solid' : 'outlined'}
-          color={showFilter ? 'primary' : 'neutral'}
+          variant={isFilterByTag ? 'solid' : 'outlined'}
+          color={isFilterByTag ? 'primary' : 'neutral'}
           onClick={() => setShowFilter((prev) => !prev)}
           disabled={!cakes?.length}
         >
@@ -167,21 +167,23 @@ export default function CakeTable() {
             );
           })}
         </Box>
-        <Box display='flex' gap={0.5} flexWrap='wrap'>
-          {categories?.map((cate) => {
-            const checked = selectedCategories.includes(cate.id);
-            return (
-              <Chip
-                key={cate.id}
-                variant='outlined'
-                color={checked ? 'primary' : 'neutral'}
-                onClick={() => onClickChip(cate.id)}
-              >
-                {cate.name}
-              </Chip>
-            );
-          })}
-        </Box>
+        {!!categories?.length && (
+          <Box display='flex' gap={0.5} flexWrap='wrap'>
+            {categories?.map((cate) => {
+              const checked = selectedCategories.includes(cate.id);
+              return (
+                <Chip
+                  key={cate.id}
+                  variant='outlined'
+                  color={checked ? 'primary' : 'neutral'}
+                  onClick={() => onClickChip(cate.id)}
+                >
+                  {cate.name}
+                </Chip>
+              );
+            })}
+          </Box>
+        )}
       </Box>
       <Box
         flexGrow={1}
@@ -191,7 +193,6 @@ export default function CakeTable() {
         display='flex'
         flexDirection='column'
         gap={1}
-        mt={0.5}
       >
         {renderedCakes.map((row) => (
           <CakeTableRow key={row.id} {...row} />
@@ -206,7 +207,7 @@ export default function CakeTable() {
                 sx={{ borderRadius: '6px', minHeight: '100px' }}
               />
             ))}
-        {(showFilter || searchWord) &&
+        {(isFilterByTag || searchWord) &&
           cakes?.length !== 0 &&
           renderedCakes.length === 0 && (
             <Typography
