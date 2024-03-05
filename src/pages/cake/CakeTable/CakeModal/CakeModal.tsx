@@ -8,14 +8,7 @@ import {
 } from '@/api/cake';
 import { QUERY_KEY } from '@/api/queryKeys';
 import MyModal from '@/components/MyModal/MyModal';
-import {
-  Age,
-  AgeStr,
-  Gender,
-  GenderStr,
-  ageKeys,
-  genderKeys,
-} from '@/constants';
+import { AgeStr, GenderStr, ageKeys, genderKeys } from '@/constants';
 import useUploadImage from '@/hooks/useUploadImage';
 import { genIdByDate } from '@/utils/string-utils';
 import { AddOutlined, PhotoCameraOutlined } from '@mui/icons-material';
@@ -156,14 +149,6 @@ export default function CakeModal({ open, onClose, initData }: Props) {
       reset(cakeForm);
     }
   }, [initData]);
-
-  const onClickGender = (gender: Gender) => {
-    setValue('gender', selectedGender === gender ? null : gender);
-  };
-
-  const onClickAge = (age: Age) => {
-    setValue('age', selectedAge === age ? null : age);
-  };
 
   const updatePrice = (id: string, newData: CakePriceWithoutId) => {
     const index = prices.findIndex((oldData) => oldData.id === id);
@@ -306,14 +291,21 @@ export default function CakeModal({ open, onClose, initData }: Props) {
         </Box>
         <Typography level='title-sm'>Giới tính</Typography>
         <Box display='flex' gap={0.5} flexWrap='wrap'>
+          <Chip
+            variant={selectedGender === null ? 'solid' : 'soft'}
+            color={selectedGender === null ? 'primary' : 'neutral'}
+            onClick={() => setValue('gender', null)}
+          >
+            Tất cả
+          </Chip>
           {genderKeys.map((gender) => {
             const checked = selectedGender === gender;
             return (
               <Chip
                 key={gender}
-                variant='outlined'
+                variant={checked ? 'solid' : 'soft'}
                 color={checked ? 'primary' : 'neutral'}
-                onClick={() => onClickGender(gender)}
+                onClick={() => setValue('gender', gender)}
               >
                 {GenderStr[gender]}
               </Chip>
@@ -322,14 +314,21 @@ export default function CakeModal({ open, onClose, initData }: Props) {
         </Box>
         <Typography level='title-sm'>Độ tuổi</Typography>
         <Box display='flex' gap={0.5} flexWrap='wrap'>
+          <Chip
+            variant={selectedAge === null ? 'solid' : 'soft'}
+            color={selectedAge === null ? 'primary' : 'neutral'}
+            onClick={() => setValue('age', null)}
+          >
+            Tất cả
+          </Chip>
           {ageKeys.map((age) => {
             const checked = selectedAge === age;
             return (
               <Chip
                 key={age}
-                variant='outlined'
+                variant={checked ? 'solid' : 'soft'}
                 color={checked ? 'primary' : 'neutral'}
-                onClick={() => onClickAge(age)}
+                onClick={() => setValue('age', age)}
               >
                 {AgeStr[age]} tuổi
               </Chip>
