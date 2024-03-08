@@ -17,8 +17,8 @@ export default function AppRouter() {
             {/* <Route path='categories' Component={CategoryPage} /> */}
             <Route path='cakes' Component={CakePage} />
             <Route path='data' Component={DataPage} />
-            <Route path='*' Component={NotFoundPage} />
           </Route>
+          <Route path='*' Component={NotFoundPage} />
         </Route>
       </Routes>
     </BrowserRouter>
