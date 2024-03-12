@@ -2,6 +2,12 @@ import { CakeRounded, StorageRounded } from '@mui/icons-material';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
+export const ONE_MINUTE_IN_SECOND = 60;
+
+export const DISABLED_DEPLOY_TIME_IN_SECOND = ONE_MINUTE_IN_SECOND * 2;
+
+export const PREVIOUS_DEPLOY_DATE = 'PREVIOUS_DEPLOY_DATE';
+
 export enum COLLECTION {
   Users = 'users',
   Cakes = 'cakes',
