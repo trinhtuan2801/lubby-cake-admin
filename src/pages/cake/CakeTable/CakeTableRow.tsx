@@ -182,8 +182,9 @@ export default function CakeTableRow(props: CakeTableRowProps) {
             color='danger'
             sx={{ display: 'inline-block' }}
           >
-            {name} ?
+            {name}
           </Typography>
+          &nbsp;?
         </Typography>
       </MyModal>
       <CakeModal

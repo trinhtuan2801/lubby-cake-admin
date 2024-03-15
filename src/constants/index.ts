@@ -69,8 +69,8 @@ export enum SearchParam {
 }
 
 export enum Gender {
-  FEMALE = 'F',
   MALE = 'M',
+  FEMALE = 'F',
 }
 
 export const genderKeys = Object.values(Gender);

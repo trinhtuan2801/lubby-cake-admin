@@ -291,13 +291,6 @@ export default function CakeModal({ open, onClose, initData }: Props) {
         </Box>
         <Typography level='title-sm'>Giới tính</Typography>
         <Box display='flex' gap={0.5} flexWrap='wrap'>
-          <Chip
-            variant={selectedGender === null ? 'solid' : 'soft'}
-            color={selectedGender === null ? 'primary' : 'neutral'}
-            onClick={() => setValue('gender', null)}
-          >
-            Tất cả
-          </Chip>
           {genderKeys.map((gender) => {
             const checked = selectedGender === gender;
             return (
@@ -311,16 +304,16 @@ export default function CakeModal({ open, onClose, initData }: Props) {
               </Chip>
             );
           })}
-        </Box>
-        <Typography level='title-sm'>Độ tuổi</Typography>
-        <Box display='flex' gap={0.5} flexWrap='wrap'>
           <Chip
-            variant={selectedAge === null ? 'solid' : 'soft'}
-            color={selectedAge === null ? 'primary' : 'neutral'}
-            onClick={() => setValue('age', null)}
+            variant={selectedGender === null ? 'solid' : 'soft'}
+            color={selectedGender === null ? 'primary' : 'neutral'}
+            onClick={() => setValue('gender', null)}
           >
             Tất cả
           </Chip>
+        </Box>
+        <Typography level='title-sm'>Độ tuổi</Typography>
+        <Box display='flex' gap={0.5} flexWrap='wrap'>
           {ageKeys.map((age) => {
             const checked = selectedAge === age;
             return (
@@ -334,6 +327,13 @@ export default function CakeModal({ open, onClose, initData }: Props) {
               </Chip>
             );
           })}
+          <Chip
+            variant={selectedAge === null ? 'solid' : 'soft'}
+            color={selectedAge === null ? 'primary' : 'neutral'}
+            onClick={() => setValue('age', null)}
+          >
+            Tất cả
+          </Chip>
         </Box>
         {/* <Autocomplete
           value={getCategoryQR.data?.filter((cate) =>
